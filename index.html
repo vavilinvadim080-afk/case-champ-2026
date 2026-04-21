@@ -1,0 +1,2071 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0b1a" />
+<meta name="description" content="Кейс-Чемпионат 2026 — всероссийский студенческий конкурс решений. Реши настоящий бизнес-кейс, получи приз и оффер от топ-компаний." />
+<title>Кейс-Чемпионат 2026 — реши кейс, получи оффер</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================================
+   Reset + tokens
+   ========================================================================= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.55;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea, select { font: inherit; }
+
+:root {
+  --bg: #08081a;
+  --bg-2: #0e0e26;
+  --surface: rgba(255,255,255,0.04);
+  --surface-2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.18);
+  --fg: #f2f3f7;
+  --fg-muted: #a5a8b8;
+  --fg-dim: #6b6e80;
+
+  --accent: #7b61ff;
+  --accent-2: #22d3ee;
+  --accent-3: #ff5cb1;
+  --grad: linear-gradient(135deg, #7b61ff 0%, #22d3ee 100%);
+  --grad-alt: linear-gradient(135deg, #ff5cb1 0%, #7b61ff 50%, #22d3ee 100%);
+  --grad-soft: linear-gradient(135deg, rgba(123,97,255,.25), rgba(34,211,238,.25));
+
+  --radius: 18px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+
+  --shadow-sm: 0 2px 10px rgba(0,0,0,.25);
+  --shadow-md: 0 10px 40px rgba(8,8,26,.45);
+  --shadow-lg: 0 30px 80px rgba(8,8,26,.6);
+
+  --container: 1200px;
+  --nav-h: 72px;
+}
+
+/* =========================================================================
+   Background & ambient
+   ========================================================================= */
+.bg-root {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1000px 600px at 90% -10%, rgba(123,97,255,.25), transparent 60%),
+    radial-gradient(800px 500px at -10% 30%, rgba(34,211,238,.20), transparent 60%),
+    radial-gradient(700px 500px at 60% 110%, rgba(255,92,177,.18), transparent 60%),
+    linear-gradient(180deg, #08081a 0%, #0b0b22 100%);
+}
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .5;
+  pointer-events: none;
+  animation: floaty 18s ease-in-out infinite;
+}
+.blob.a { width: 420px; height: 420px; background: #7b61ff; top: -80px; right: -60px; }
+.blob.b { width: 360px; height: 360px; background: #22d3ee; bottom: -100px; left: -120px; animation-delay: -6s; }
+.blob.c { width: 260px; height: 260px; background: #ff5cb1; top: 40%; left: 50%; animation-delay: -12s; }
+
+@keyframes floaty {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(30px,-40px) scale(1.05); }
+}
+
+/* =========================================================================
+   Nav
+   ========================================================================= */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  transition: background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: rgba(8,8,26,.72);
+  backdrop-filter: saturate(140%) blur(16px);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  border-bottom-color: var(--border);
+}
+.nav__inner {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -.01em;
+}
+.logo__mark {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--grad);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(123,97,255,.4);
+  position: relative;
+}
+.logo__mark::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255,255,255,.25), transparent 50%);
+  pointer-events: none;
+}
+.nav__menu {
+  display: flex;
+  gap: 28px;
+  margin-left: 24px;
+}
+.nav__menu a {
+  color: var(--fg-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color .2s ease;
+  position: relative;
+}
+.nav__menu a:hover { color: var(--fg); }
+.nav__menu a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 2px;
+  background: var(--grad);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+.nav__menu a:hover::after { transform: scaleX(1); }
+
+.nav__actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.nav__burger {
+  display: none;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  place-items: center;
+}
+.nav__burger svg { width: 20px; height: 20px; }
+
+/* =========================================================================
+   Buttons
+   ========================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .01em;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn--primary {
+  background: var(--grad);
+  color: #fff;
+  box-shadow: 0 10px 30px -10px rgba(123,97,255,.6);
+}
+.btn--primary:hover {
+  box-shadow: 0 16px 40px -10px rgba(123,97,255,.75);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border-strong);
+}
+.btn--ghost:hover {
+  background: var(--surface-2);
+  border-color: #fff;
+}
+.btn--lg { height: 54px; padding: 0 28px; font-size: 15px; }
+.btn--block { width: 100%; }
+
+/* =========================================================================
+   Layout helpers
+   ========================================================================= */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.section {
+  padding: 110px 0;
+  position: relative;
+}
+.section--tight { padding: 70px 0; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.eyebrow__dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 12px var(--accent-2);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: .5; transform: scale(1.4); }
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 4.2vw, 52px);
+  letter-spacing: -.02em;
+  line-height: 1.08;
+  margin: 18px 0 14px;
+}
+.section-sub {
+  color: var(--fg-muted);
+  font-size: 17px;
+  max-width: 720px;
+}
+.section-head { margin-bottom: 56px; }
+.section-head--center { text-align: center; }
+.section-head--center .section-sub { margin: 14px auto 0; }
+
+.gradient-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =========================================================================
+   Hero
+   ========================================================================= */
+.hero {
+  padding-top: calc(var(--nav-h) + 100px);
+  padding-bottom: 100px;
+  position: relative;
+  overflow: hidden;
+}
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.15fr .9fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(38px, 6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  margin: 22px 0 24px;
+}
+.hero__title span { display: block; }
+.hero__sub {
+  color: var(--fg-muted);
+  font-size: clamp(16px, 1.4vw, 19px);
+  max-width: 560px;
+  margin-bottom: 36px;
+}
+.hero__cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.hero__meta {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  color: var(--fg-muted);
+  font-size: 14px;
+}
+.hero__meta b { color: var(--fg); font-weight: 700; font-size: 22px; font-family: 'Space Grotesk', sans-serif; display: block; }
+
+/* Hero visual */
+.hero__visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 520px;
+  margin-left: auto;
+}
+.orb {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
+    conic-gradient(from 180deg, #7b61ff, #22d3ee, #ff5cb1, #7b61ff);
+  filter: blur(.5px);
+  animation: orbRot 22s linear infinite;
+  box-shadow: 0 40px 120px -20px rgba(123,97,255,.5), inset 0 0 80px rgba(0,0,0,.2);
+}
+.orb::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(10,10,30,.35), rgba(10,10,30,.9));
+}
+@keyframes orbRot { to { transform: rotate(360deg); } }
+
+.float-card {
+  position: absolute;
+  background: rgba(16, 16, 36, .72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: var(--shadow-md);
+  animation: floatCard 6s ease-in-out infinite;
+}
+.float-card--1 { top: 8%; left: -4%; animation-delay: -1s; }
+.float-card--2 { bottom: 18%; right: -2%; animation-delay: -3s; }
+.float-card--3 { bottom: 4%; left: 18%; animation-delay: -5s; }
+@keyframes floatCard {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-10px); }
+}
+.float-card__title { font-size: 12px; color: var(--fg-dim); margin-bottom: 4px; }
+.float-card__value { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; }
+.float-card__value--grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* =========================================================================
+   Marquee (partners-like)
+   ========================================================================= */
+.marquee {
+  position: relative;
+  padding: 38px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  background: rgba(8,8,26,.55);
+}
+.marquee__track {
+  display: flex;
+  gap: 60px;
+  white-space: nowrap;
+  animation: scrollX 40s linear infinite;
+  align-items: center;
+}
+.marquee__item {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--fg-muted);
+  opacity: .8;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.marquee__item::after {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@keyframes scrollX { to { transform: translateX(-50%); } }
+
+/* =========================================================================
+   Stats
+   ========================================================================= */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.stat {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.stat:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.stat__value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 44px;
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat__label { color: var(--fg-muted); font-size: 14px; }
+
+/* =========================================================================
+   Case card (featured)
+   ========================================================================= */
+.case-card {
+  position: relative;
+  padding: 44px;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, rgba(123,97,255,.15), rgba(34,211,238,.08)),
+    rgba(16,16,36,.75);
+  border: 1px solid var(--border-strong);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.case-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  padding: 2px;
+  border-radius: inherit;
+  background: var(--grad-alt);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: .5;
+  pointer-events: none;
+}
+.case-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+.case-card__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(34,211,238,.15);
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.case-card__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.case-card__desc { color: var(--fg-muted); margin-bottom: 24px; font-size: 15px; }
+.case-card__list { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; }
+.case-card__list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14.5px;
+  color: var(--fg);
+}
+.case-card__list li::before {
+  content: "";
+  flex: 0 0 auto;
+  margin-top: 9px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--grad);
+}
+.case-card__side {
+  background: rgba(8,8,26,.6);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px;
+}
+.mini-stat { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px dashed var(--border); }
+.mini-stat:last-child { border-bottom: none; }
+.mini-stat span { color: var(--fg-muted); font-size: 13px; }
+.mini-stat b { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+
+/* =========================================================================
+   Timeline
+   ========================================================================= */
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 36px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--border-strong) 10%, var(--border-strong) 90%, transparent);
+}
+.stage {
+  position: relative;
+  padding-top: 72px;
+}
+.stage__dot {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--grad);
+  box-shadow: 0 0 0 6px rgba(123,97,255,.15), 0 10px 30px -5px rgba(123,97,255,.5);
+}
+.stage__dot::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+.stage__date { color: var(--accent-2); font-size: 13px; font-weight: 600; letter-spacing: .04em; margin-bottom: 6px; }
+.stage__title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 8px; letter-spacing: -.01em; }
+.stage__text { color: var(--fg-muted); font-size: 14px; }
+
+/* =========================================================================
+   Prizes
+   ========================================================================= */
+.prizes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.prize {
+  position: relative;
+  padding: 36px 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  transition: transform .3s ease, border-color .3s ease, background .3s ease;
+}
+.prize:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.prize--gold { background: linear-gradient(160deg, rgba(255,196,102,.18), rgba(255,92,177,.08)); border-color: rgba(255,196,102,.35); }
+.prize--silver { background: linear-gradient(160deg, rgba(34,211,238,.15), rgba(123,97,255,.08)); border-color: rgba(34,211,238,.35); }
+.prize__place {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 18px;
+  letter-spacing: -.04em;
+}
+.prize--gold .prize__place { background: linear-gradient(135deg, #ffd980, #ff9d5c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prize--silver .prize__place { background: linear-gradient(135deg, #9dd8ff, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prize--bronze .prize__place { background: linear-gradient(135deg, #ff9d70, #ff5cb1); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prize__amount { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px; margin-bottom: 10px; }
+.prize__list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
+.prize__list li { color: var(--fg-muted); font-size: 14px; display: flex; gap: 10px; }
+.prize__list li::before { content: "✓"; color: var(--accent-2); font-weight: 700; }
+
+/* =========================================================================
+   Jury
+   ========================================================================= */
+.jury {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.juror {
+  padding: 24px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: center;
+  transition: transform .25s ease, border-color .25s ease;
+}
+.juror:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+.juror__avatar {
+  width: 86px; height: 86px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+  background: var(--grad);
+  box-shadow: 0 10px 30px -10px rgba(123,97,255,.6);
+}
+.juror__name { font-weight: 700; margin-bottom: 4px; }
+.juror__role { font-size: 13px; color: var(--fg-muted); }
+
+/* =========================================================================
+   FAQ
+   ========================================================================= */
+.faq { max-width: 860px; margin: 0 auto; }
+.faq__item {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color .2s ease, background .2s ease;
+}
+.faq__item[open] { border-color: var(--border-strong); background: var(--surface-2); }
+.faq__summary {
+  list-style: none;
+  padding: 20px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 600;
+  font-size: 16px;
+}
+.faq__summary::-webkit-details-marker { display: none; }
+.faq__icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  flex: 0 0 auto;
+  transition: transform .25s ease, background .25s ease;
+}
+.faq__item[open] .faq__icon { transform: rotate(45deg); background: var(--grad); border-color: transparent; }
+.faq__answer {
+  padding: 0 24px 22px;
+  color: var(--fg-muted);
+  font-size: 15px;
+}
+
+/* =========================================================================
+   CTA
+   ========================================================================= */
+.cta {
+  position: relative;
+  padding: 72px 40px;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, rgba(123,97,255,.25), rgba(34,211,238,.15));
+  border: 1px solid var(--border-strong);
+  text-align: center;
+  overflow: hidden;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(500px 300px at 20% 20%, rgba(255,92,177,.25), transparent 60%),
+    radial-gradient(500px 300px at 80% 80%, rgba(34,211,238,.25), transparent 60%);
+  pointer-events: none;
+}
+.cta > * { position: relative; }
+.cta h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 3.4vw, 44px);
+  letter-spacing: -.02em;
+  margin: 0 0 14px;
+}
+.cta p { color: var(--fg-muted); font-size: 17px; max-width: 580px; margin: 0 auto 28px; }
+
+/* =========================================================================
+   Footer
+   ========================================================================= */
+.footer {
+  padding: 64px 0 40px;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 14px;
+  background: rgba(8,8,26,.55);
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.footer__col h4 { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--fg); margin: 0 0 14px; }
+.footer__col a { display: block; padding: 5px 0; transition: color .15s ease; }
+.footer__col a:hover { color: var(--fg); }
+.footer__about { max-width: 340px; }
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+/* =========================================================================
+   Modal
+   ========================================================================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(4,4,12,.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeIn .25s ease;
+}
+.modal.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal__box {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: #0f0f26;
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  padding: 32px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  animation: riseIn .3s cubic-bezier(.2,.8,.2,1);
+}
+.modal__box--wide { max-width: 680px; }
+@keyframes riseIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal__close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--fg-muted);
+  transition: background .2s, color .2s;
+}
+.modal__close:hover { background: var(--surface-2); color: var(--fg); }
+.modal__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -.02em;
+  margin: 0 0 6px;
+}
+.modal__sub { color: var(--fg-muted); font-size: 14px; margin-bottom: 24px; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+.tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--fg-muted);
+  transition: background .2s, color .2s;
+}
+.tab.active { background: var(--grad); color: #fff; }
+
+/* Form */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: var(--fg-muted); margin-bottom: 6px; }
+.input, .textarea, .select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-size: 15px;
+  transition: border-color .2s, background .2s;
+}
+.input:focus, .textarea:focus, .select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.textarea { resize: vertical; min-height: 100px; }
+.file-drop {
+  position: relative;
+  padding: 24px;
+  border: 2px dashed var(--border-strong);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--fg-muted);
+  transition: border-color .2s, background .2s;
+  cursor: pointer;
+}
+.file-drop:hover, .file-drop.drag { border-color: var(--accent); background: var(--surface); color: var(--fg); }
+.file-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.file-drop__icon { font-size: 24px; margin-bottom: 6px; }
+.file-drop__name { color: var(--accent-2); font-weight: 600; margin-top: 6px; font-size: 13px; word-break: break-all; }
+.helper { font-size: 12px; color: var(--fg-dim); margin-top: 6px; }
+.error { color: #ff7b7b; font-size: 13px; margin-top: 4px; }
+.toast {
+  position: fixed;
+  right: 20px; bottom: 20px;
+  z-index: 200;
+  background: #0f0f26;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .25s ease, opacity .25s ease;
+  max-width: 360px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast--ok { border-color: rgba(34,211,238,.5); }
+.toast--err { border-color: rgba(255,120,120,.5); }
+
+/* Dashboard */
+.dash-head { display: flex; gap: 16px; align-items: center; margin-bottom: 20px; }
+.dash-head__avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--grad);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 22px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.dash-head__name { font-weight: 700; font-size: 17px; }
+.dash-head__email { color: var(--fg-muted); font-size: 13px; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+.dash-cell {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.dash-cell small { color: var(--fg-muted); font-size: 12px; display: block; margin-bottom: 4px; }
+.dash-cell b { font-family: 'Space Grotesk', sans-serif; font-size: 18px; }
+
+.submission-list { display: grid; gap: 10px; margin-top: 12px; }
+.submission {
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.submission__info { min-width: 0; }
+.submission__title { font-weight: 600; font-size: 14px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.submission__meta { color: var(--fg-muted); font-size: 12px; }
+.submission__status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(34,211,238,.15);
+  color: var(--accent-2);
+  white-space: nowrap;
+}
+
+/* Team status card */
+.team-status {
+  padding: 22px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(123,97,255,.18), rgba(34,211,238,.10)),
+    rgba(16,16,36,.6);
+  border: 1px solid var(--border-strong);
+}
+.team-status__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+.team-status__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 4px;
+}
+.team-status__name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -.01em;
+}
+.team-status__badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255,255,255,.08);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+}
+.team-status__badge--ok {
+  background: rgba(34,211,238,.15);
+  color: var(--accent-2);
+  border-color: rgba(34,211,238,.35);
+}
+.team-status__latest {
+  margin-bottom: 14px;
+  padding: 12px;
+  background: rgba(0,0,0,.25);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.team-status__file {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.team-status__file-ico {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: var(--grad);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  font-size: 18px;
+}
+.team-status__file-info { min-width: 0; flex: 1; }
+.team-status__file-name {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.team-status__file-meta {
+  color: var(--fg-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.team-status__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.team-status__upload { flex: 1; min-width: 220px; }
+
+.upload-panel { animation: riseIn .3s cubic-bezier(.2,.8,.2,1); }
+
+@media (max-width: 520px) {
+  .team-status__head { flex-direction: column; gap: 10px; }
+}
+
+/* =========================================================================
+   Reveal animation
+   ========================================================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+@media (max-width: 960px) {
+  .hero__grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero__visual { margin: 0 auto; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .case-card__grid { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: repeat(2, 1fr); }
+  .timeline::before { display: none; }
+  .prizes { grid-template-columns: 1fr; }
+  .jury { grid-template-columns: repeat(2, 1fr); }
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .nav__menu { display: none; }
+  .nav__burger { display: grid; }
+  .nav__menu--open {
+    display: flex;
+    position: absolute;
+    top: var(--nav-h);
+    left: 0; right: 0;
+    flex-direction: column;
+    padding: 20px 24px;
+    gap: 16px;
+    background: rgba(8,8,26,.96);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .section { padding: 80px 0; }
+  .case-card { padding: 28px; }
+  .cta { padding: 48px 24px; }
+  .stage { padding-top: 56px; }
+  .stage__dot { top: 12px; }
+}
+@media (max-width: 520px) {
+  .stats { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: 1fr; }
+  .jury { grid-template-columns: 1fr; }
+  .footer__grid { grid-template-columns: 1fr; }
+  .hero__meta { gap: 20px; }
+  .modal__box { padding: 24px 20px; }
+  .float-card--1 { left: 0; }
+  .float-card--2 { right: 0; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-root">
+  <div class="blob a"></div>
+  <div class="blob b"></div>
+  <div class="blob c"></div>
+</div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<!-- ========================================================================
+     Navigation
+     ======================================================================== -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#" class="logo" aria-label="Кейс-Чемпионат">
+      <span class="logo__mark">КЧ</span>
+      <span>Кейс<span style="opacity:.6">·</span>Чемпионат</span>
+    </a>
+    <nav class="nav__menu" id="navMenu">
+      <a href="#about">О чемпионате</a>
+      <a href="#case">Кейс</a>
+      <a href="#stages">Этапы</a>
+      <a href="#prizes">Призы</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav__actions">
+      <button class="btn btn--ghost" id="loginBtn" type="button">Личный кабинет</button>
+      <a href="#register" class="btn btn--primary">Участвовать</a>
+      <button class="nav__burger" id="burger" aria-label="Меню" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ========================================================================
+     Hero
+     ======================================================================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero__grid">
+      <div>
+        <div class="eyebrow reveal">
+          <span class="eyebrow__dot"></span>
+          Регистрация открыта · Приём решений до 25 мая
+        </div>
+        <h1 class="hero__title reveal">
+          <span>Реши реальный</span>
+          <span class="gradient-text">бизнес-кейс</span>
+          <span>и получи оффер</span>
+        </h1>
+        <p class="hero__sub reveal">
+          Кейс-Чемпионат 2026 — всероссийский онлайн-конкурс для студентов и молодых специалистов. Командные решения, обратная связь от топ-менеджмента и путь к стажировке в компаниях-партнёрах.
+        </p>
+        <div class="hero__cta reveal">
+          <a href="#register" class="btn btn--primary btn--lg">Зарегистрироваться →</a>
+          <a href="#case" class="btn btn--ghost btn--lg">Посмотреть кейс</a>
+        </div>
+        <div class="hero__meta reveal">
+          <div><b>2 600+</b>участников</div>
+          <div><b>34</b>ВУЗа</div>
+          <div><b>1 200 000 ₽</b>призовой фонд</div>
+        </div>
+      </div>
+
+      <div class="hero__visual reveal" aria-hidden="true">
+        <div class="orb"></div>
+        <div class="float-card float-card--1">
+          <div class="float-card__title">Команда</div>
+          <div class="float-card__value">3–4 человека</div>
+        </div>
+        <div class="float-card float-card--2">
+          <div class="float-card__title">Срок решения</div>
+          <div class="float-card__value float-card__value--grad">2 недели</div>
+        </div>
+        <div class="float-card float-card--3">
+          <div class="float-card__title">Формат</div>
+          <div class="float-card__value">Онлайн</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Marquee
+     ======================================================================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" id="marquee">
+    <span class="marquee__item">Партнёр Банк</span>
+    <span class="marquee__item">Ритейл·tech</span>
+    <span class="marquee__item">Телеком лидер</span>
+    <span class="marquee__item">Big4 Консалтинг</span>
+    <span class="marquee__item">FMCG Global</span>
+    <span class="marquee__item">Металлургия 4.0</span>
+    <span class="marquee__item">Логистика Next</span>
+    <span class="marquee__item">Нефтегаз Digital</span>
+  </div>
+</div>
+
+<!-- ========================================================================
+     About / Stats
+     ======================================================================== -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>О чемпионате</div>
+      <h2 class="section-title">Один кейс. Две недели. <span class="gradient-text">Целая карьера впереди.</span></h2>
+      <p class="section-sub">Ты получаешь боевую задачу от крупной компании, собираешь команду, предлагаешь концепцию и защищаешь её перед экспертами индустрии. Лучшие — в финал и в стажировку с офером.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal">
+        <div class="stat__value gradient-text">2 600+</div>
+        <div class="stat__label">Участников из 34 городов России</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat__value gradient-text">680</div>
+        <div class="stat__label">Команд подали заявку в прошлом сезоне</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat__value gradient-text">45+</div>
+        <div class="stat__label">Экспертов из топ-компаний в жюри</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat__value gradient-text">72%</div>
+        <div class="stat__label">Финалистов получили оффер или стажировку</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Case
+     ======================================================================== -->
+<section class="section" id="case">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>Кейс сезона 2026</div>
+      <h2 class="section-title">Маршрут построен: <span class="gradient-text">усовершенствуй систему контактного центра</span></h2>
+      <p class="section-sub">Один из кейсов чемпионата от крупного системообразующего банка: нужно разработать концепцию интеллектуальной системы распределения обращений в контактном центре сегмента малого и среднего бизнеса.</p>
+    </div>
+
+    <div class="case-card reveal">
+      <div class="case-card__grid">
+        <div>
+          <div class="case-card__tag">★ Кейс партнёра · Финансы / Tech</div>
+          <h3 class="case-card__title">Интеллектуальная маршрутизация обращений в контактном центре СМБ</h3>
+          <p class="case-card__desc">Банк ежемесячно получает 130–200 тысяч обращений по 300+ темам. Около 20% клиентов попадают не к тому оператору. Задачи между сотрудниками распределяются без учёта загрузки, экспертизы и конверсии. Цель — сделать систему, которая сама понимает, куда и кому направить клиента.</p>
+
+          <ul class="case-card__list">
+            <li>Проанализировать текущие процессы, выявить узкие места и точки оптимизации</li>
+            <li>Спроектировать алгоритм распределения обращений с учётом тематики, навыков и загрузки операторов</li>
+            <li>Предложить механизм выявления клиентов с потенциалом покупки и их маршрутизации на продажи</li>
+            <li>Оценить экономический эффект, стоимость и сроки внедрения решения (до 5 лет, поэтапно)</li>
+            <li>Проработать архитектуру: источники данных, ML-компоненты, таск-трекер, взаимодействие подразделений</li>
+          </ul>
+
+          <a href="#register" class="btn btn--primary">Взять в работу</a>
+        </div>
+
+        <aside class="case-card__side">
+          <div class="mini-stat"><span>Клиентов СМБ</span><b>1,8 млн</b></div>
+          <div class="mini-stat"><span>Обращений в месяц</span><b>130–200 тыс.</b></div>
+          <div class="mini-stat"><span>Операторов</span><b>300</b></div>
+          <div class="mini-stat"><span>Тем обращений</span><b>300+</b></div>
+          <div class="mini-stat"><span>Диалог, среднее</span><b>310 сек</b></div>
+          <div class="mini-stat"><span>Переходов не к оператору</span><b>20%</b></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Stages / Timeline
+     ======================================================================== -->
+<section class="section" id="stages">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>Этапы</div>
+      <h2 class="section-title">Как проходит <span class="gradient-text">чемпионат</span></h2>
+      <p class="section-sub">Четыре этапа — от регистрации до финальной защиты перед жюри и получения офера.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="stage reveal">
+        <div class="stage__dot"></div>
+        <div class="stage__date">20 апр — 10 мая</div>
+        <div class="stage__title">Регистрация</div>
+        <div class="stage__text">Собираешь команду из 3–4 человек, регистрируешь её в личном кабинете и получаешь полный текст кейса.</div>
+      </div>
+      <div class="stage reveal">
+        <div class="stage__dot"></div>
+        <div class="stage__date">11 — 25 мая</div>
+        <div class="stage__title">Работа над решением</div>
+        <div class="stage__text">Две недели на концепцию, архитектуру, экономический эффект и презентацию. Ответы на вопросы — в Telegram-чате чемпионата.</div>
+      </div>
+      <div class="stage reveal">
+        <div class="stage__dot"></div>
+        <div class="stage__date">26 мая — 5 июня</div>
+        <div class="stage__title">Отбор и полуфинал</div>
+        <div class="stage__text">Эксперты оценивают решения по методологии, 20 сильнейших команд проходят в полуфинальный питч онлайн.</div>
+      </div>
+      <div class="stage reveal">
+        <div class="stage__dot"></div>
+        <div class="stage__date">12 июня</div>
+        <div class="stage__title">Финал и награждение</div>
+        <div class="stage__text">Топ-5 защищают решения перед топ-менеджментом партнёра, получают призы, стажировки и оффер.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Prizes
+     ======================================================================== -->
+<section class="section" id="prizes">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>Призы</div>
+      <h2 class="section-title">Призовой фонд — <span class="gradient-text">1 200 000 ₽</span></h2>
+      <p class="section-sub">Плюс оффер, стажировка и менторство от топ-менеджмента. Выплата — на команду, распределяется по внутренней договорённости.</p>
+    </div>
+
+    <div class="prizes">
+      <div class="prize prize--gold reveal">
+        <div class="prize__place">1</div>
+        <div class="prize__amount">600 000 ₽</div>
+        <ul class="prize__list">
+          <li>Оффер на стажировку у партнёра</li>
+          <li>Встреча с топ-менеджментом</li>
+          <li>Featured-кейс в медиа</li>
+          <li>Сертификат победителя</li>
+        </ul>
+      </div>
+      <div class="prize prize--silver reveal">
+        <div class="prize__place">2</div>
+        <div class="prize__amount">400 000 ₽</div>
+        <ul class="prize__list">
+          <li>Фаст-трек собеседования</li>
+          <li>Менторская сессия</li>
+          <li>Сертификат призёра</li>
+        </ul>
+      </div>
+      <div class="prize prize--bronze reveal">
+        <div class="prize__place">3</div>
+        <div class="prize__amount">200 000 ₽</div>
+        <ul class="prize__list">
+          <li>Рекомендация в HR-базу партнёра</li>
+          <li>Мерч чемпионата</li>
+          <li>Сертификат призёра</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Jury
+     ======================================================================== -->
+<section class="section" id="jury">
+  <div class="container">
+    <div class="section-head reveal section-head--center">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>Жюри</div>
+      <h2 class="section-title">Эксперты, <span class="gradient-text">которые оценивают</span></h2>
+      <p class="section-sub">Менеджеры направлений, архитекторы решений и директора по данным из компаний-партнёров.</p>
+    </div>
+
+    <div class="jury">
+      <div class="juror reveal">
+        <div class="juror__avatar">МС</div>
+        <div class="juror__name">Маргарита Самойлова</div>
+        <div class="juror__role">Head of CX, Банк-партнёр</div>
+      </div>
+      <div class="juror reveal">
+        <div class="juror__avatar">АК</div>
+        <div class="juror__name">Алексей Ковалёв</div>
+        <div class="juror__role">Data Science Lead</div>
+      </div>
+      <div class="juror reveal">
+        <div class="juror__avatar">ЕП</div>
+        <div class="juror__name">Елена Петрова</div>
+        <div class="juror__role">Product Director</div>
+      </div>
+      <div class="juror reveal">
+        <div class="juror__avatar">ИВ</div>
+        <div class="juror__name">Игорь Волков</div>
+        <div class="juror__role">Partner, Strategy Consulting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     FAQ
+     ======================================================================== -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head reveal section-head--center">
+      <div class="eyebrow"><span class="eyebrow__dot"></span>FAQ</div>
+      <h2 class="section-title">Частые <span class="gradient-text">вопросы</span></h2>
+    </div>
+
+    <div class="faq">
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Кто может участвовать?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Студенты бакалавриата, магистратуры и специалитета (2–6 курс), а также выпускники вузов 2024–2026 годов. Команда — 3–4 человека, можно собрать её из разных вузов.</div>
+      </details>
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Нужен ли опыт в банке или в ML?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Нет. Оцениваем продуктовое и системное мышление, работу с данными и умение защитить решение. Кейс даёт вводные по процессам и примеры структур таблиц — дальше твоя логика.</div>
+      </details>
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>В каком формате сдавать решение?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Загрузи презентацию в PDF (до 20 слайдов) через личный кабинет. При необходимости — ссылка на supplementary материал (код, расчёты, Figma). Приём решений закрывается 25 мая в 23:59 МСК.</div>
+      </details>
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Можно ли одному, без команды?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Можно подать заявку соло и попасть в мэтчинг команд в Telegram-чате чемпионата. Но финал выходит командным: формируй группу 3–4 человека до отправки решения.</div>
+      </details>
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Как будут оценивать?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Четыре равных блока: глубина анализа и работа с данными · архитектурная состоятельность · экономический эффект и план внедрения · качество коммуникации и презентации.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Registration / CTA
+     ======================================================================== -->
+<section class="section" id="register">
+  <div class="container">
+    <div class="cta reveal">
+      <h2>Готов решать?</h2>
+      <p>Создай личный кабинет, получи полный текст кейса и загрузи решение, когда оно будет готово. Всё в одном месте.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn--primary btn--lg" type="button" onclick="openAuth('register')">Создать кабинет →</button>
+        <button class="btn btn--ghost btn--lg" type="button" onclick="openAuth('login')">У меня уже есть аккаунт</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     Footer
+     ======================================================================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col footer__about">
+        <div class="logo" style="margin-bottom:14px">
+          <span class="logo__mark">КЧ</span>
+          <span>Кейс<span style="opacity:.6">·</span>Чемпионат</span>
+        </div>
+        <div>Всероссийский студенческий кейс-чемпионат 2026. Реальные задачи от крупных компаний, честная оценка, прозрачный путь к стажировке.</div>
+      </div>
+      <div class="footer__col">
+        <h4>Чемпионат</h4>
+        <a href="#about">О проекте</a>
+        <a href="#case">Кейс сезона</a>
+        <a href="#stages">Этапы</a>
+        <a href="#prizes">Призы</a>
+      </div>
+      <div class="footer__col">
+        <h4>Участникам</h4>
+        <a href="#register">Регистрация</a>
+        <a href="#faq">FAQ</a>
+        <a href="javascript:openAuth('login')">Личный кабинет</a>
+        <a href="#">Правила</a>
+      </div>
+      <div class="footer__col">
+        <h4>Контакты</h4>
+        <a href="mailto:hello@case-champ.ru">hello@case-champ.ru</a>
+        <a href="https://t.me/casechamp" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://vk.com/casechamp" target="_blank" rel="noopener">ВКонтакте</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div>© 2026 Кейс-Чемпионат. Все права защищены.</div>
+      <div>Сделано для молодых специалистов 🧡</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================================================================
+     Modal: Auth (login / register)
+     ======================================================================== -->
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal__box">
+    <button class="modal__close" type="button" onclick="closeModal('authModal')" aria-label="Закрыть">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2 class="modal__title" id="authTitle">Личный кабинет</h2>
+    <p class="modal__sub">Участвуй, отправляй решение и отслеживай статус.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="login" type="button" role="tab">Вход</button>
+      <button class="tab" data-tab="register" type="button" role="tab">Регистрация</button>
+    </div>
+
+    <!-- Login -->
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input class="input" type="email" id="loginEmail" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="loginPass">Пароль</label>
+        <input class="input" type="password" id="loginPass" required minlength="6" autocomplete="current-password" />
+      </div>
+      <div class="error" id="loginErr" style="display:none"></div>
+      <button class="btn btn--primary btn--block" style="margin-top:10px" type="submit">Войти</button>
+    </form>
+
+    <!-- Register -->
+    <form id="registerForm" autocomplete="on" style="display:none">
+      <div class="field">
+        <label for="regName">Имя и фамилия</label>
+        <input class="input" type="text" id="regName" required />
+      </div>
+      <div class="field">
+        <label for="regEmail">Email</label>
+        <input class="input" type="email" id="regEmail" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="regUni">ВУЗ / организация</label>
+        <input class="input" type="text" id="regUni" required />
+      </div>
+      <div class="field">
+        <label for="regTeam">Команда <span style="color:var(--fg-dim);font-weight:400">(можно указать позже)</span></label>
+        <input class="input" type="text" id="regTeam" placeholder="Например: Route Masters" />
+      </div>
+      <div class="field">
+        <label for="regPass">Пароль</label>
+        <input class="input" type="password" id="regPass" required minlength="6" autocomplete="new-password" />
+        <div class="helper">Минимум 6 символов. Хранится в виде scrypt-хэша на сервере.</div>
+      </div>
+      <div class="error" id="regErr" style="display:none"></div>
+      <button class="btn btn--primary btn--block" style="margin-top:10px" type="submit">Создать кабинет</button>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================================
+     Modal: Dashboard
+     ======================================================================== -->
+<div class="modal" id="dashModal" role="dialog" aria-modal="true" aria-labelledby="dashTitle">
+  <div class="modal__box modal__box--wide">
+    <button class="modal__close" type="button" onclick="closeModal('dashModal')" aria-label="Закрыть">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <div class="dash-head">
+      <div class="dash-head__avatar" id="dashAvatar">?</div>
+      <div style="flex:1">
+        <div class="dash-head__name" id="dashName">Имя</div>
+        <div class="dash-head__email" id="dashEmail">email</div>
+      </div>
+      <button class="btn btn--ghost" type="button" onclick="logout()">Выйти</button>
+    </div>
+
+    <!-- Большой статус-блок команды -->
+    <div class="team-status" id="teamStatus">
+      <div class="team-status__head">
+        <div>
+          <div class="team-status__label">Команда</div>
+          <div class="team-status__name" id="teamName">Не указана</div>
+        </div>
+        <div>
+          <div class="team-status__label">Решение</div>
+          <div class="team-status__badge" id="teamBadge">Не загружено</div>
+        </div>
+      </div>
+      <div id="teamLatest" class="team-status__latest" style="display:none">
+        <div class="team-status__file">
+          <div class="team-status__file-ico">📄</div>
+          <div class="team-status__file-info">
+            <div class="team-status__file-name" id="latestFile">—</div>
+            <div class="team-status__file-meta" id="latestMeta">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="team-status__actions">
+        <button class="btn btn--primary btn--lg team-status__upload" type="button" id="openUploadBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v14"/><path d="M5 10l7-7 7 7"/><path d="M3 21h18"/></svg>
+          <span id="openUploadLabel">Загрузить решение</span>
+        </button>
+        <button class="btn btn--ghost" type="button" id="downloadLatestBtn" style="display:none">Скачать текущее</button>
+      </div>
+    </div>
+
+    <div class="dash-grid" style="margin-top:20px">
+      <div class="dash-cell"><small>Приём решений до</small><b>25 мая, 23:59 МСК</b></div>
+      <div class="dash-cell"><small>Кейс</small><b>Маршрут построен</b></div>
+      <div class="dash-cell"><small>Отправок в истории</small><b id="dashCount">0</b></div>
+      <div class="dash-cell"><small>Лимит файла</small><b id="dashLimit">25 МБ · PDF</b></div>
+    </div>
+
+    <!-- Форма загрузки (скрыта по умолчанию, раскрывается кнопкой) -->
+    <div class="upload-panel" id="uploadPanel" hidden>
+      <h3 class="modal__title" id="dashTitle" style="font-size:20px;margin-top:24px">Загрузка решения</h3>
+      <p class="modal__sub">Решение сдаёт один участник от команды. Можно заменить до закрытия приёма — засчитается последняя версия.</p>
+
+      <form id="submitForm">
+        <div class="field">
+          <label for="subTeam">Название команды</label>
+          <input class="input" type="text" id="subTeam" placeholder="Например: Route Masters" required />
+        </div>
+        <div class="field">
+          <label for="subTitle">Название решения</label>
+          <input class="input" type="text" id="subTitle" placeholder="Интеллектуальная маршрутизация на базе ML" required />
+        </div>
+        <div class="field">
+          <label for="subNotes">Краткая аннотация (до 500 знаков)</label>
+          <textarea class="textarea" id="subNotes" maxlength="500" placeholder="Опиши подход, ключевую идею, ожидаемый эффект…"></textarea>
+        </div>
+        <div class="field">
+          <label>Файл решения (PDF)</label>
+          <label class="file-drop" id="fileDrop">
+            <div class="file-drop__icon">📎</div>
+            <div>Перетащи PDF сюда или нажми, чтобы выбрать</div>
+            <div class="file-drop__name" id="fileName"></div>
+            <input type="file" id="fileInput" accept="application/pdf,.pdf" />
+          </label>
+          <div class="helper" id="fileHelper">Только PDF, не тяжелее 25 МБ. Файл загружается на сервер чемпионата.</div>
+        </div>
+        <div class="error" id="subErr" style="display:none"></div>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <button class="btn btn--primary btn--lg" style="flex:1" type="submit" id="submitBtn">Отправить решение</button>
+          <button class="btn btn--ghost" type="button" onclick="toggleUpload(false)">Отмена</button>
+        </div>
+      </form>
+    </div>
+
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin:28px 0 0">История отправок</h3>
+    <div class="submission-list" id="subList"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ==========================================================================
+   API клиент
+   ========================================================================== */
+const LS_TOKEN = 'cc26:token';
+const getToken = () => localStorage.getItem(LS_TOKEN);
+const setToken = t => t ? localStorage.setItem(LS_TOKEN, t) : localStorage.removeItem(LS_TOKEN);
+
+let currentUserCache = null;   // последний профиль из /api/me
+let config = { maxFileMB: 25 };
+
+async function api(path, { method = 'GET', body, form } = {}) {
+  const headers = {};
+  const t = getToken();
+  if (t) headers['Authorization'] = 'Bearer ' + t;
+
+  let payload;
+  if (form) {
+    payload = form; // FormData — браузер сам проставит multipart-boundary
+  } else if (body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+    payload = JSON.stringify(body);
+  }
+
+  let r;
+  try { r = await fetch(path, { method, headers, body: payload }); }
+  catch (e) { throw new Error('Сеть недоступна. Проверь, что сервер запущен.'); }
+
+  let data = null;
+  try { data = await r.json(); } catch { /* not json */ }
+  if (!r.ok) throw new Error((data && data.error) || ('Ошибка ' + r.status));
+  return data;
+}
+
+/* ==========================================================================
+   UI helpers
+   ========================================================================== */
+const $ = sel => document.querySelector(sel);
+
+function toast(msg, kind = 'ok') {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.className = 'toast show toast--' + kind;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 3600);
+}
+
+function openModal(id) {
+  document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+window.closeModal = closeModal;
+
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => closeModal(m.id));
+});
+
+function fmtSize(bytes) {
+  if (bytes < 1024) return bytes + ' Б';
+  if (bytes < 1024*1024) return (bytes / 1024).toFixed(1) + ' КБ';
+  return (bytes / (1024*1024)).toFixed(2) + ' МБ';
+}
+function fmtDate(ms) {
+  const d = new Date(ms);
+  return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function initials(name) { return (name || '?').trim().split(/\s+/).map(s => s[0]).slice(0,2).join('').toUpperCase(); }
+
+/* ==========================================================================
+   Auth flow
+   ========================================================================== */
+async function openAuth(tab = 'login') {
+  if (getToken()) {
+    try { await openDash(); return; } catch { setToken(null); /* fall through */ }
+  }
+  setTab(tab);
+  openModal('authModal');
+}
+window.openAuth = openAuth;
+
+function setTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  $('#loginForm').style.display    = tab === 'login' ? '' : 'none';
+  $('#registerForm').style.display = tab === 'register' ? '' : 'none';
+  $('#authTitle').textContent      = tab === 'login' ? 'Вход в кабинет' : 'Создай кабинет';
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
+
+$('#loginBtn').addEventListener('click', () => openAuth('login'));
+
+$('#registerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#regErr'); err.style.display = 'none';
+  const body = {
+    name:       $('#regName').value.trim(),
+    email:      $('#regEmail').value.trim().toLowerCase(),
+    university: $('#regUni').value.trim(),
+    team:       $('#regTeam').value.trim(),
+    password:   $('#regPass').value,
+  };
+  try {
+    const { token, user } = await api('/api/register', { method: 'POST', body });
+    setToken(token);
+    currentUserCache = user;
+    closeModal('authModal');
+    await openDash();
+    toast('Кабинет создан. Удачи на чемпионате!', 'ok');
+  } catch (e) {
+    err.textContent = e.message; err.style.display = 'block';
+  }
+});
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#loginErr'); err.style.display = 'none';
+  const body = {
+    email:    $('#loginEmail').value.trim().toLowerCase(),
+    password: $('#loginPass').value,
+  };
+  try {
+    const { token, user } = await api('/api/login', { method: 'POST', body });
+    setToken(token);
+    currentUserCache = user;
+    closeModal('authModal');
+    await openDash();
+    toast('С возвращением, ' + user.name.split(' ')[0] + '!', 'ok');
+  } catch (e) {
+    err.textContent = e.message; err.style.display = 'block';
+  }
+});
+
+async function logout() {
+  try { await api('/api/logout', { method: 'POST' }); } catch {}
+  setToken(null);
+  currentUserCache = null;
+  closeModal('dashModal');
+  updateNavAuth(null);
+  toast('Ты вышел из кабинета', 'ok');
+}
+window.logout = logout;
+
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+async function openDash() {
+  if (!getToken()) { openAuth('login'); return; }
+  let data;
+  try { data = await api('/api/me'); }
+  catch (e) {
+    setToken(null);
+    openAuth('login');
+    return;
+  }
+  const u = data.user;
+  currentUserCache = u;
+  updateNavAuth(u);
+
+  $('#dashName').textContent   = u.name;
+  $('#dashEmail').textContent  = u.email;
+  $('#dashAvatar').textContent = initials(u.name);
+  $('#teamName').textContent   = u.team || 'Не указана';
+  $('#dashLimit').textContent  = `${config.maxFileMB} МБ · PDF`;
+  $('#fileHelper').textContent = `Только PDF, не тяжелее ${config.maxFileMB} МБ. Файл загружается на сервер чемпионата.`;
+  $('#subTeam').value = u.team || '';
+
+  renderTeamStatus(data.team);
+  await refreshSubmissions();
+  toggleUpload(false); // форма скрыта при открытии ЛК
+  openModal('dashModal');
+}
+window.openDash = openDash;
+
+function renderTeamStatus(team) {
+  const badge   = $('#teamBadge');
+  const latest  = $('#teamLatest');
+  const btnLbl  = $('#openUploadLabel');
+  const dlBtn   = $('#downloadLatestBtn');
+  const count   = $('#dashCount');
+
+  count.textContent = team.totalSubmissions || 0;
+
+  if (team.latest) {
+    badge.textContent = 'Решение принято';
+    badge.className = 'team-status__badge team-status__badge--ok';
+    latest.style.display = '';
+    $('#latestFile').textContent = team.latest.title;
+    $('#latestMeta').textContent =
+      `${team.latest.file_name} · ${fmtSize(team.latest.file_size)} · ${fmtDate(team.latest.created_at)}`;
+    btnLbl.textContent = 'Заменить решение';
+    dlBtn.style.display = '';
+    dlBtn.onclick = () => downloadSubmission(team.latest.id, team.latest.file_name);
+  } else {
+    badge.textContent = 'Не загружено';
+    badge.className = 'team-status__badge';
+    latest.style.display = 'none';
+    btnLbl.textContent = 'Загрузить решение';
+    dlBtn.style.display = 'none';
+  }
+}
+
+$('#openUploadBtn').addEventListener('click', () => toggleUpload(true));
+
+function toggleUpload(show) {
+  const p = $('#uploadPanel');
+  p.hidden = !show;
+  if (show) {
+    setTimeout(() => p.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+    // если команда есть — подставляем
+    if (currentUserCache && currentUserCache.team) $('#subTeam').value = currentUserCache.team;
+  }
+}
+window.toggleUpload = toggleUpload;
+
+/* ==========================================================================
+   File input
+   ========================================================================== */
+let chosenFile = null;
+const fileInput = $('#fileInput');
+const fileDrop  = $('#fileDrop');
+const fileName  = $('#fileName');
+
+fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+;['dragenter','dragover'].forEach(ev => fileDrop.addEventListener(ev, e => {
+  e.preventDefault(); fileDrop.classList.add('drag');
+}));
+;['dragleave','drop'].forEach(ev => fileDrop.addEventListener(ev, e => {
+  e.preventDefault(); fileDrop.classList.remove('drag');
+}));
+fileDrop.addEventListener('drop', e => {
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+    setFile(e.dataTransfer.files[0]);
+  }
+});
+
+function setFile(f) {
+  if (!f) { chosenFile = null; fileName.textContent = ''; return; }
+  const maxBytes = config.maxFileMB * 1024 * 1024;
+  const isPdf = f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf');
+  if (!isPdf) { toast('Принимаем только PDF', 'err'); fileInput.value = ''; return; }
+  if (f.size > maxBytes) {
+    toast(`Файл ${fmtSize(f.size)} — это больше ${config.maxFileMB} МБ. Сожми PDF`, 'err');
+    fileInput.value = '';
+    return;
+  }
+  chosenFile = f;
+  fileName.textContent = f.name + ' · ' + fmtSize(f.size);
+}
+
+/* ==========================================================================
+   Submission form
+   ========================================================================== */
+$('#submitForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#subErr'); err.style.display = 'none';
+  const team  = $('#subTeam').value.trim();
+  const title = $('#subTitle').value.trim();
+  const notes = $('#subNotes').value.trim();
+
+  if (!chosenFile) { err.textContent = 'Прикрепи PDF-файл с решением'; err.style.display = 'block'; return; }
+
+  const btn = $('#submitBtn');
+  btn.disabled = true;
+  const origText = btn.textContent;
+  btn.textContent = 'Загружаем…';
+
+  const fd = new FormData();
+  fd.append('team', team);
+  fd.append('title', title);
+  fd.append('notes', notes);
+  fd.append('file', chosenFile);
+
+  try {
+    await api('/api/submission', { method: 'POST', form: fd });
+    $('#submitForm').reset();
+    setFile(null);
+    toast('Решение отправлено. Удачи в отборе!', 'ok');
+    toggleUpload(false);
+    // обновляем статус и список
+    const me = await api('/api/me');
+    currentUserCache = me.user;
+    renderTeamStatus(me.team);
+    $('#teamName').textContent = me.user.team || 'Не указана';
+    await refreshSubmissions();
+  } catch (e) {
+    err.textContent = e.message; err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
+  }
+});
+
+/* ==========================================================================
+   Submissions list
+   ========================================================================== */
+async function refreshSubmissions() {
+  let data;
+  try { data = await api('/api/submissions'); }
+  catch { return; }
+  const list = data.submissions || [];
+  const root = $('#subList');
+  root.innerHTML = '';
+  if (!list.length) {
+    root.innerHTML = '<div class="submission"><div class="submission__info"><div class="submission__title">Пока нет отправок</div><div class="submission__meta">Нажми «Загрузить решение» выше, чтобы сдать первую версию</div></div></div>';
+    return;
+  }
+  list.forEach((s, idx) => {
+    const row = document.createElement('div');
+    row.className = 'submission';
+    row.innerHTML = `
+      <div class="submission__info">
+        <div class="submission__title">${escapeHtml(s.title)}${idx === 0 ? ' <span class="submission__status" style="margin-left:6px">Текущее</span>' : ''}</div>
+        <div class="submission__meta">Команда «${escapeHtml(s.team)}» · ${escapeHtml(s.file_name)} · ${fmtSize(s.file_size)} · ${fmtDate(s.created_at)}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn--ghost" type="button" data-dl-id="${s.id}" data-dl-name="${escapeHtml(s.file_name)}">Скачать</button>
+        <span class="submission__status">${escapeHtml(s.status)}</span>
+      </div>
+    `;
+    root.appendChild(row);
+  });
+  root.querySelectorAll('button[data-dl-id]').forEach(b => {
+    b.addEventListener('click', () => downloadSubmission(b.dataset.dlId, b.dataset.dlName));
+  });
+}
+
+async function downloadSubmission(id, fileName) {
+  try {
+    const r = await fetch('/api/submission/' + encodeURIComponent(id) + '/download', {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || ('Ошибка ' + r.status));
+    }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fileName || 'solution.pdf';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {
+    toast(e.message, 'err');
+  }
+}
+window.downloadSubmission = downloadSubmission;
+
+/* ==========================================================================
+   Nav + scroll + reveal
+   ========================================================================== */
+const nav = $('#nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+$('#burger').addEventListener('click', () => {
+  $('#navMenu').classList.toggle('nav__menu--open');
+});
+$('#navMenu').addEventListener('click', e => {
+  if (e.target.tagName === 'A') $('#navMenu').classList.remove('nav__menu--open');
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#' || href.length < 2) return;
+    const el = document.querySelector(href);
+    if (!el) return;
+    e.preventDefault();
+    const y = el.getBoundingClientRect().top + window.pageYOffset - 60;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+});
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+(function initMarquee() { const t = $('#marquee'); t.innerHTML += t.innerHTML; })();
+
+function updateNavAuth(user) {
+  $('#loginBtn').textContent = user ? ('Кабинет · ' + user.name.split(' ')[0]) : 'Личный кабинет';
+}
+
+/* ==========================================================================
+   Init: конфиг и автологин
+   ========================================================================== */
+(async function init() {
+  try { config = await api('/api/config'); } catch { /* дефолт */ }
+  if (getToken()) {
+    try {
+      const me = await api('/api/me');
+      currentUserCache = me.user;
+      updateNavAuth(me.user);
+    } catch {
+      setToken(null);
+    }
+  }
+})();
+</script>
+</body>
+</html>
