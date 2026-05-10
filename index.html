@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0b0b1a" />
-<meta name="description" content="Кейс-Чемпионат 2026 — всероссийский студенческий конкурс решений. Реши настоящий бизнес-кейс, получи приз и оффер от топ-компаний." />
-<title>Кейс-Чемпионат 2026 — реши кейс, получи оффер</title>
+<meta name="theme-color" content="#0b1233" />
+<meta name="description" content="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 21 мая, финал — 5 июня в Санкт-Петербурге." />
+<title>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC — AI-агенты для T&D</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1097,25 +1097,570 @@ input, textarea, select { font: inherit; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* =========================================================================
+   v2 · Customer-driven additions (ИТ-кластер Газпром нефть × HSCC, mixed theme)
+   ========================================================================= */
+:root {
+  --bg-deep-blue: #0b1233;
+  --bg-deep-blue-2: #131a45;
+  --violet-pill: #6c4cff;
+  --violet-pill-strong: #8a6bff;
+  --pink-burst: #ff4d9e;
+  --pink-burst-2: #c83ee0;
+  --pink-soft-1: #ffe9f3;
+  --pink-soft-2: #f6e3ff;
+  --light-fg: #1a1538;
+  --light-fg-muted: #5a5380;
+  --light-card-border: rgba(108,76,255,.12);
+  --dash-blue: #5fb6ff;
+}
+
+/* Solid deep-blue background — no blobs, no grid */
+.bg-root {
+  background: var(--bg-deep-blue);
+}
+body { background: var(--bg-deep-blue); }
+
+/* Violet pill section header — dot + dashed line */
+.eyebrow--violet {
+  background: var(--violet-pill);
+  border-color: transparent;
+  color: #fff;
+  padding: 9px 18px 9px 14px;
+  font-size: 12px;
+  letter-spacing: .14em;
+  position: relative;
+  text-transform: lowercase;
+  font-weight: 700;
+}
+.eyebrow--violet .eyebrow__dot {
+  background: #fff;
+  box-shadow: none;
+  animation: none;
+}
+.eyebrow--violet::after {
+  content: "";
+  display: inline-block;
+  width: 56px;
+  margin-left: 12px;
+  height: 2px;
+  background-image: linear-gradient(90deg, #fff 0 6px, transparent 6px 12px);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  vertical-align: middle;
+}
+
+/* Light section variants for stages / prizes / FAQ */
+.section--light {
+  background:
+    radial-gradient(900px 600px at 80% -10%, var(--pink-soft-2), transparent 55%),
+    linear-gradient(180deg, var(--pink-soft-1) 0%, #fffaff 100%);
+  color: var(--light-fg);
+}
+.section--white {
+  background: #fff;
+  color: var(--light-fg);
+}
+.section--light .section-sub,
+.section--white .section-sub { color: var(--light-fg-muted); }
+.section--light .gradient-text,
+.section--white .gradient-text {
+  background: linear-gradient(135deg, var(--pink-burst) 0%, var(--violet-pill) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* === Hero burst (explosion shape) — dominant centerpiece === */
+.hero--burst {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(5,8,28,.6) 100%),
+    var(--bg-deep-blue);
+  text-align: center;
+  padding-top: calc(var(--nav-h) + 60px);
+  padding-bottom: 100px;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* soft ambient blobs behind the burst */
+.hero--burst::before,
+.hero--burst::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  z-index: 0;
+  pointer-events: none;
+  animation: heroBlobFloat 22s ease-in-out infinite;
+}
+.hero--burst::before {
+  width: 520px; height: 520px;
+  top: -120px; left: -160px;
+  background: rgba(108,76,255,.45);
+}
+.hero--burst::after {
+  width: 460px; height: 460px;
+  bottom: -140px; right: -120px;
+  background: rgba(95,182,255,.35);
+  animation-delay: -10s;
+}
+@keyframes heroBlobFloat {
+  0%,100% { transform: translate(0,0); }
+  50%     { transform: translate(40px, -30px); }
+}
+/* vignette overlay */
+.hero--burst .hero__vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at center, transparent 40%, rgba(0,0,0,.45) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero__burst-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero__burst {
+  width: min(95vw, 1100px);
+  aspect-ratio: 1 / 1;
+  background:
+    radial-gradient(circle at 38% 32%, #ff86c6 0%, #ff4d9e 35%, #c83ee0 72%, #6c4cff 100%);
+  filter: drop-shadow(0 40px 120px rgba(255,77,158,.45));
+  clip-path: polygon(
+    50% 0%, 56% 11%, 65% 2%, 66% 16%, 78% 8%, 75% 22%, 90% 18%, 82% 32%, 99% 32%, 86% 44%,
+    100% 50%, 86% 56%, 99% 68%, 82% 68%, 90% 82%, 75% 78%, 78% 92%, 66% 84%, 65% 98%, 56% 89%,
+    50% 100%, 44% 89%, 35% 98%, 34% 84%, 22% 92%, 25% 78%, 10% 82%, 18% 68%, 1% 68%, 14% 56%,
+    0% 50%, 14% 44%, 1% 32%, 18% 32%, 10% 18%, 25% 22%, 22% 8%, 34% 16%, 35% 2%, 44% 11%
+  );
+  animation: burstPulse 8s ease-in-out infinite;
+}
+@keyframes burstPulse {
+  0%,100% { transform: scale(1) rotate(-2deg); }
+  50%     { transform: scale(1.03) rotate(2deg); }
+}
+.hero--burst .container { position: relative; z-index: 2; }
+.hero--burst .hero__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 12px;
+}
+.hero__meta--glass {
+  display: inline-flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 18px 28px;
+  margin: 8px auto 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 20px 60px -20px rgba(0,0,0,.5);
+}
+.hero__meta--glass > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 13px;
+  color: rgba(255,255,255,.75);
+  line-height: 1.2;
+}
+.hero__meta--glass b {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: -.01em;
+}
+@media (max-width: 520px) {
+  .hero__meta--glass { gap: 18px; padding: 14px 18px; border-radius: 22px; }
+  .hero__meta--glass > div { font-size: 12px; }
+  .hero__meta--glass b { font-size: 15px; }
+}
+.hero--burst .hero__title {
+  font-size: clamp(36px, 6.4vw, 84px);
+  line-height: .96;
+  letter-spacing: -.04em;
+  color: #fff;
+  font-weight: 800;
+  text-shadow: 0 4px 30px rgba(60,15,80,.45);
+  margin: 0 0 24px;
+}
+.hero--burst .hero__title small {
+  display: block;
+  font-size: .34em;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: lowercase;
+  margin-bottom: 14px;
+  opacity: .92;
+}
+.hero--burst .hero__sub {
+  position: relative;
+  font-size: clamp(15px, 1.5vw, 19px);
+  color: #fff;
+  max-width: 640px;
+  margin: 0 auto 28px;
+  text-shadow: 0 2px 16px rgba(0,0,0,.4);
+}
+.hero--burst .hero__cta { justify-content: center; margin-bottom: 28px; }
+.hero--burst .hero__meta {
+  justify-content: center;
+  gap: 36px;
+  margin-top: 8px;
+  color: rgba(255,255,255,.85);
+}
+.hero--burst .hero__meta b { color: #fff; }
+
+/* Marquee — bright blue band variant */
+.marquee--bright {
+  background: var(--dash-blue);
+  border-color: transparent;
+  padding: 22px 0;
+}
+.marquee--bright .marquee__item {
+  color: #fff;
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 800;
+  letter-spacing: .01em;
+  text-transform: lowercase;
+  opacity: 1;
+}
+.marquee--bright .marquee__item::after { background: #fff; }
+
+/* About — two columns: photo left, text right */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: 56px;
+  align-items: center;
+}
+.about-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--violet-pill) 0%, var(--pink-burst) 100%);
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,.85);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-align: center;
+  padding: 24px;
+  box-shadow: 0 30px 80px -20px rgba(108,76,255,.5);
+}
+.about-photo__placeholder {
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.about-photo__placeholder b {
+  font-size: 18px;
+  color: #fff;
+}
+.about-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.about-text p {
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(255,255,255,.85);
+  margin: 0 0 22px;
+}
+.section--light .about-text p,
+.section--white .about-text p { color: var(--light-fg-muted); }
+.pill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.pill-tag {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--violet-pill);
+  color: var(--violet-pill-strong);
+  font-weight: 600;
+  font-size: 14px;
+  background: transparent;
+}
+.section--dark .pill-tag {
+  color: #fff;
+  border-color: rgba(255,255,255,.4);
+}
+
+/* Stages — zigzag layout, light bg */
+.stages-zigzag {
+  display: grid;
+  gap: 56px;
+  position: relative;
+}
+.stage-wrap {
+  position: relative;
+  display: grid;
+}
+.stage-wrap--left  { justify-items: start; }
+.stage-wrap--right { justify-items: end; }
+.stage-burst {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle at 38% 32%, #ff86c6 0%, var(--pink-burst) 50%, var(--pink-burst-2) 100%);
+  filter: drop-shadow(0 20px 50px rgba(255,77,158,.35));
+  clip-path: polygon(
+    50% 0%, 58% 12%, 70% 4%, 68% 18%, 84% 14%, 78% 28%, 94% 26%, 84% 38%, 100% 42%, 86% 52%,
+    100% 62%, 84% 66%, 92% 82%, 76% 78%, 80% 94%, 66% 84%, 64% 100%, 53% 88%, 44% 100%, 38% 86%,
+    24% 96%, 26% 80%, 8% 84%, 18% 72%, 0% 66%, 14% 56%, 0% 44%, 16% 40%, 4% 26%, 20% 28%, 14% 12%, 30% 18%, 33% 0%, 44% 14%
+  );
+  z-index: 0;
+  pointer-events: none;
+  animation: burstPulse 11s ease-in-out infinite;
+}
+.stage-wrap--left  .stage-burst { right: 0; top: -40px; }
+.stage-wrap--right .stage-burst { left: 0; bottom: -40px; }
+
+.stage-card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 28px;
+  padding: 36px 38px;
+  box-shadow: 0 24px 60px -20px rgba(108,76,255,.22);
+  border: 1px solid var(--light-card-border);
+}
+.stage-card__num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: -.04em;
+  background: linear-gradient(135deg, var(--violet-pill), var(--pink-burst));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 6px;
+}
+.stage-card__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -.01em;
+  color: var(--light-fg);
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+.stage-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--violet-pill);
+  color: var(--violet-pill-strong);
+  background: transparent;
+}
+.badge--offline {
+  border-color: var(--pink-burst);
+  color: var(--pink-burst);
+}
+.stage-card__date {
+  color: var(--pink-burst);
+  font-weight: 700;
+  font-size: 15px;
+}
+.stage-card__text {
+  color: var(--light-fg-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+.stage-card__sub {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(108,76,255,.25);
+  font-size: 13.5px;
+  color: var(--light-fg-muted);
+}
+.stage-card__sub b { color: var(--violet-pill-strong); font-weight: 700; }
+
+/* Prize carousel */
+.carousel {
+  position: relative;
+  margin-top: 16px;
+}
+.carousel__track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 30px 12% 40px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.carousel__track::-webkit-scrollbar { display: none; }
+.carousel__card {
+  flex: 0 0 320px;
+  scroll-snap-align: center;
+  background: #fff;
+  border-radius: 28px;
+  padding: 32px 28px;
+  border: 1px solid var(--light-card-border);
+  box-shadow: 0 16px 40px -16px rgba(108,76,255,.18);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+  display: flex;
+  flex-direction: column;
+}
+.carousel__card.is-active {
+  transform: scale(1.08);
+  box-shadow: 0 32px 80px -20px rgba(255,77,158,.35);
+  border-color: rgba(255,77,158,.25);
+  z-index: 2;
+}
+.carousel__card .prize__place,
+.carousel__card .prize__amount { display: none; } /* override legacy if shown */
+.carousel__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -.02em;
+  color: var(--pink-burst);
+  margin: 0 0 18px;
+  line-height: 1.05;
+}
+.carousel__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+}
+.carousel__list li {
+  color: var(--light-fg);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 14px 0;
+  border-bottom: 2px dashed rgba(95,182,255,.55);
+}
+.carousel__list li:last-child { border-bottom: none; }
+.carousel__nav {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+}
+.carousel__btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--violet-pill);
+  color: var(--violet-pill);
+  display: grid;
+  place-items: center;
+  transition: background .2s, color .2s, transform .15s;
+}
+.carousel__btn:hover { background: var(--violet-pill); color: #fff; transform: translateY(-1px); }
+.carousel__dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.carousel__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(108,76,255,.25);
+  transition: background .2s, width .2s;
+}
+.carousel__dot.is-active {
+  background: var(--violet-pill);
+  width: 28px;
+  border-radius: 999px;
+}
+
+/* FAQ — light variant */
+.section--light .faq__item,
+.section--white .faq__item {
+  background: #fff;
+  border-color: var(--light-card-border);
+}
+.section--light .faq__item[open],
+.section--white .faq__item[open] {
+  background: #fff;
+  border-color: var(--violet-pill);
+}
+.section--light .faq__summary,
+.section--white .faq__summary { color: var(--light-fg); }
+.section--light .faq__answer,
+.section--white .faq__answer { color: var(--light-fg-muted); }
+.section--light .faq__icon,
+.section--white .faq__icon {
+  background: #fff;
+  border-color: var(--light-card-border);
+  color: var(--violet-pill);
+}
+.section--light .faq__item[open] .faq__icon,
+.section--white .faq__item[open] .faq__icon {
+  background: var(--violet-pill);
+  color: #fff;
+}
+
+/* About text colour on dark hero section */
+.about-text--light p { color: var(--light-fg-muted); }
+.about-text--light .pill-tag { color: var(--violet-pill-strong); border-color: var(--violet-pill); }
+
+@media (max-width: 960px) {
+  .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .stage-card { width: 100%; }
+  .stage-card--left, .stage-card--right { justify-self: stretch; }
+  .carousel__track { padding: 24px 6% 32px; }
+  .carousel__card { flex-basis: 280px; }
+  .hero--burst .hero__title { font-size: clamp(34px, 9vw, 64px); }
+}
+@media (max-width: 520px) {
+  .stage-card { padding: 24px 22px; }
+  .stage-card__num { font-size: 48px; }
+  .carousel__card { flex-basis: 88vw; padding: 24px 22px; }
+}
 </style>
 </head>
 <body>
 
-<div class="bg-root">
-  <div class="blob a"></div>
-  <div class="blob b"></div>
-  <div class="blob c"></div>
-</div>
-<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-root"></div>
 
 <!-- ========================================================================
      Navigation
      ======================================================================== -->
 <header class="nav" id="nav">
   <div class="nav__inner">
-    <a href="#" class="logo" aria-label="Кейс-Чемпионат">
-      <span class="logo__mark">КЧ</span>
-      <span>Кейс<span style="opacity:.6">·</span>Чемпионат</span>
+    <a href="#" class="logo" aria-label="Кейс-чемпионат ИТ-кластера Газпром нефть × HSCC">
+      <span class="logo__mark">ит</span>
+      <span>ИТ-кластер<span style="opacity:.6"> × </span>HSCC</span>
     </a>
     <nav class="nav__menu" id="navMenu">
       <a href="#about">О чемпионате</a>
@@ -1137,47 +1682,28 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      Hero
      ======================================================================== -->
-<section class="hero">
+<section class="hero hero--burst">
+  <div class="hero__burst-wrap" aria-hidden="true">
+    <div class="hero__burst"></div>
+  </div>
+  <div class="hero__vignette" aria-hidden="true"></div>
   <div class="container">
-    <div class="hero__grid">
-      <div>
-        <div class="eyebrow reveal">
-          <span class="eyebrow__dot"></span>
-          Регистрация открыта · Приём решений до 25 мая
-        </div>
-        <h1 class="hero__title reveal">
-          <span>Реши реальный</span>
-          <span class="gradient-text">бизнес-кейс</span>
-          <span>и получи оффер</span>
-        </h1>
-        <p class="hero__sub reveal">
-          Кейс-Чемпионат 2026 — всероссийский онлайн-конкурс для студентов и молодых специалистов. Командные решения, обратная связь от топ-менеджмента и путь к стажировке в компаниях-партнёрах.
-        </p>
-        <div class="hero__cta reveal">
-          <a href="#register" class="btn btn--primary btn--lg">Зарегистрироваться →</a>
-          <a href="#case" class="btn btn--ghost btn--lg">Посмотреть кейс</a>
-        </div>
-        <div class="hero__meta reveal">
-          <div><b>2 600+</b>участников</div>
-          <div><b>34</b>ВУЗа</div>
-          <div><b>1 200 000 ₽</b>призовой фонд</div>
-        </div>
+    <div class="hero__inner">
+      <h1 class="hero__title reveal">
+        <small>кейс-чемпионат</small>
+        ИТ-кластер<br>«Газпром нефть» × HSCC
+      </h1>
+      <p class="hero__sub reveal">
+        Создай корпоративную экосистему на базе AI-агентов для T&amp;D — обучения и развития сотрудников.
+      </p>
+      <div class="hero__cta reveal">
+        <a href="#register" class="btn btn--primary btn--lg">Зарегистрироваться →</a>
+        <a href="#case" class="btn btn--ghost btn--lg">Узнать больше</a>
       </div>
-
-      <div class="hero__visual reveal" aria-hidden="true">
-        <div class="orb"></div>
-        <div class="float-card float-card--1">
-          <div class="float-card__title">Команда</div>
-          <div class="float-card__value">3–4 человека</div>
-        </div>
-        <div class="float-card float-card--2">
-          <div class="float-card__title">Срок решения</div>
-          <div class="float-card__value float-card__value--grad">2 недели</div>
-        </div>
-        <div class="float-card float-card--3">
-          <div class="float-card__title">Формат</div>
-          <div class="float-card__value">Онлайн</div>
-        </div>
+      <div class="hero__meta hero__meta--glass reveal">
+        <div><b>4–5</b>человек в команде</div>
+        <div><b>5 июня</b>финал в СПб</div>
+        <div><b>до 21 мая</b>регистрация</div>
       </div>
     </div>
   </div>
@@ -1186,46 +1712,43 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      Marquee
      ======================================================================== -->
-<div class="marquee" aria-hidden="true">
+<div class="marquee marquee--bright" aria-hidden="true">
   <div class="marquee__track" id="marquee">
-    <span class="marquee__item">Партнёр Банк</span>
-    <span class="marquee__item">Ритейл·tech</span>
-    <span class="marquee__item">Телеком лидер</span>
-    <span class="marquee__item">Big4 Консалтинг</span>
-    <span class="marquee__item">FMCG Global</span>
-    <span class="marquee__item">Металлургия 4.0</span>
-    <span class="marquee__item">Логистика Next</span>
-    <span class="marquee__item">Нефтегаз Digital</span>
+    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
+    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
+    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
   </div>
 </div>
 
 <!-- ========================================================================
      About / Stats
      ======================================================================== -->
-<section class="section" id="about">
+<section class="section section--white" id="about">
   <div class="container">
     <div class="section-head reveal">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>О чемпионате</div>
-      <h2 class="section-title">Один кейс. Две недели. <span class="gradient-text">Целая карьера впереди.</span></h2>
-      <p class="section-sub">Ты получаешь боевую задачу от крупной компании, собираешь команду, предлагаешь концепцию и защищаешь её перед экспертами индустрии. Лучшие — в финал и в стажировку с офером.</p>
+      <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>о кейс-чемпионате</div>
     </div>
 
-    <div class="stats">
-      <div class="stat reveal">
-        <div class="stat__value gradient-text">2 600+</div>
-        <div class="stat__label">Участников из 34 городов России</div>
+    <div class="about-grid">
+      <div class="about-photo reveal">
+        <!-- TODO: подставить реальное фото команды/мероприятия. Замени блок ниже на <img src="..." alt="..."/> -->
+        <div class="about-photo__placeholder">
+          <b>фото команды</b>
+          <span>сюда подставим снимок с открытия / командного фото</span>
+        </div>
       </div>
-      <div class="stat reveal">
-        <div class="stat__value gradient-text">680</div>
-        <div class="stat__label">Команд подали заявку в прошлом сезоне</div>
-      </div>
-      <div class="stat reveal">
-        <div class="stat__value gradient-text">45+</div>
-        <div class="stat__label">Экспертов из топ-компаний в жюри</div>
-      </div>
-      <div class="stat reveal">
-        <div class="stat__value gradient-text">72%</div>
-        <div class="stat__label">Финалистов получили оффер или стажировку</div>
+      <div class="about-text reveal">
+        <p>Кейс-чемпионат ИТ-кластера «Газпром нефть» — это возможность решить реальную бизнес-задачу на стыке AI, HR и цифровых продуктов. Участникам предстоит создать концепцию корпоративной экосистемы на базе AI-агентов для T&amp;D — обучения и развития сотрудников.</p>
+        <p>Это не учебный кейс, а задача, приближённая к реальным вызовам крупной технологической компании. Здесь важны не только технологии, но и продуктовое мышление, понимание пользовательского опыта и умение предлагать реалистичные решения.</p>
+        <p>Это шанс не только проявить себя, но и предложить своё видение будущего корпоративного AI.</p>
+        <div class="pill-tags">
+          <span class="pill-tag">AI-агенты</span>
+          <span class="pill-tag">T&amp;D</span>
+          <span class="pill-tag">корпоративные экосистемы</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1234,39 +1757,39 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      Case
      ======================================================================== -->
-<section class="section" id="case">
+<section class="section section--light" id="case">
   <div class="container">
     <div class="section-head reveal">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>Кейс сезона 2026</div>
-      <h2 class="section-title">Маршрут построен: <span class="gradient-text">усовершенствуй систему контактного центра</span></h2>
-      <p class="section-sub">Один из кейсов чемпионата от крупного системообразующего банка: нужно разработать концепцию интеллектуальной системы распределения обращений в контактном центре сегмента малого и среднего бизнеса.</p>
+      <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>кейс сезона 2026</div>
+      <h2 class="section-title">AI-агенты для <span class="gradient-text">обучения и развития сотрудников</span></h2>
+      <p class="section-sub">Задача от ИТ-кластера «Газпром нефть»: спроектировать концепцию корпоративной экосистемы на базе AI-агентов, которая помогает сотрудникам учиться, расти и быстрее адаптироваться к новым задачам.</p>
     </div>
 
     <div class="case-card reveal">
       <div class="case-card__grid">
         <div>
-          <div class="case-card__tag">★ Кейс партнёра · Финансы / Tech</div>
-          <h3 class="case-card__title">Интеллектуальная маршрутизация обращений в контактном центре СМБ</h3>
-          <p class="case-card__desc">Банк ежемесячно получает 130–200 тысяч обращений по 300+ темам. Около 20% клиентов попадают не к тому оператору. Задачи между сотрудниками распределяются без учёта загрузки, экспертизы и конверсии. Цель — сделать систему, которая сама понимает, куда и кому направить клиента.</p>
+          <div class="case-card__tag">★ кейс партнёра · Газпром Нефть · ИТ-кластер</div>
+          <h3 class="case-card__title">Корпоративная T&amp;D-экосистема на базе AI-агентов</h3>
+          <p class="case-card__desc">В крупной технологической компании сотни команд и тысячи сотрудников проходят программы обучения, переходов между ролями, развития навыков. Цель — переосмыслить T&amp;D через AI-агентов: персональные траектории, рекомендация курсов, поддержка в обучении, оценка прогресса.</p>
 
           <ul class="case-card__list">
-            <li>Проанализировать текущие процессы, выявить узкие места и точки оптимизации</li>
-            <li>Спроектировать алгоритм распределения обращений с учётом тематики, навыков и загрузки операторов</li>
-            <li>Предложить механизм выявления клиентов с потенциалом покупки и их маршрутизации на продажи</li>
-            <li>Оценить экономический эффект, стоимость и сроки внедрения решения (до 5 лет, поэтапно)</li>
-            <li>Проработать архитектуру: источники данных, ML-компоненты, таск-трекер, взаимодействие подразделений</li>
+            <li>Описать пользовательские сценарии: от новичка до тимлида, что должен делать AI-агент в каждом</li>
+            <li>Спроектировать архитектуру экосистемы: какие агенты, как они взаимодействуют, источники данных</li>
+            <li>Предложить продуктовую логику: онбординг, индивидуальные траектории, поддержка в обучении, оценка прогресса</li>
+            <li>Продумать UX и интерфейсы взаимодействия пользователя с агентом — где, как, в каких каналах</li>
+            <li>Оценить эффект для бизнеса и сотрудников, риски и этап внедрения</li>
           </ul>
 
           <a href="#register" class="btn btn--primary">Взять в работу</a>
         </div>
 
         <aside class="case-card__side">
-          <div class="mini-stat"><span>Клиентов СМБ</span><b>1,8 млн</b></div>
-          <div class="mini-stat"><span>Обращений в месяц</span><b>130–200 тыс.</b></div>
-          <div class="mini-stat"><span>Операторов</span><b>300</b></div>
-          <div class="mini-stat"><span>Тем обращений</span><b>300+</b></div>
-          <div class="mini-stat"><span>Диалог, среднее</span><b>310 сек</b></div>
-          <div class="mini-stat"><span>Переходов не к оператору</span><b>20%</b></div>
+          <div class="mini-stat"><span>Что разрабатываем</span><b>экосистему AI-агентов</b></div>
+          <div class="mini-stat"><span>Для кого</span><b>сотрудники T&amp;D</b></div>
+          <div class="mini-stat"><span>Что важно</span><b>продукт + UX + AI</b></div>
+          <div class="mini-stat"><span>Размер команды</span><b>4–5 человек</b></div>
+          <div class="mini-stat"><span>Срок отбора</span><b>22 → 29 мая</b></div>
+          <div class="mini-stat"><span>Финал</span><b>5 июня · СПб</b></div>
         </aside>
       </div>
     </div>
@@ -1276,38 +1799,64 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      Stages / Timeline
      ======================================================================== -->
-<section class="section" id="stages">
+<section class="section section--light" id="stages">
   <div class="container">
     <div class="section-head reveal">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>Этапы</div>
-      <h2 class="section-title">Как проходит <span class="gradient-text">чемпионат</span></h2>
-      <p class="section-sub">Четыре этапа — от регистрации до финальной защиты перед жюри и получения офера.</p>
+      <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>этапы пути</div>
     </div>
 
-    <div class="timeline">
-      <div class="stage reveal">
-        <div class="stage__dot"></div>
-        <div class="stage__date">20 апр — 10 мая</div>
-        <div class="stage__title">Регистрация</div>
-        <div class="stage__text">Собираешь команду из 3–4 человек, регистрируешь её в личном кабинете и получаешь полный текст кейса.</div>
+    <div class="stages-zigzag">
+      <div class="stage-wrap stage-wrap--left reveal">
+        <span class="stage-burst" aria-hidden="true"></span>
+        <article class="stage-card">
+          <div class="stage-card__num">01</div>
+          <h3 class="stage-card__title">Регистрация</h3>
+          <div class="stage-card__row">
+            <span class="badge">онлайн</span>
+            <span class="stage-card__date">до 21 мая, 23:59</span>
+          </div>
+          <p class="stage-card__text">Собирай команду из 4–5 человек и регистрируй её в личном кабинете. После регистрации получишь полный текст кейса и доступ к чату чемпионата.</p>
+        </article>
       </div>
-      <div class="stage reveal">
-        <div class="stage__dot"></div>
-        <div class="stage__date">11 — 25 мая</div>
-        <div class="stage__title">Работа над решением</div>
-        <div class="stage__text">Две недели на концепцию, архитектуру, экономический эффект и презентацию. Ответы на вопросы — в Telegram-чате чемпионата.</div>
+
+      <div class="stage-wrap stage-wrap--right reveal">
+        <span class="stage-burst" aria-hidden="true"></span>
+        <article class="stage-card">
+          <div class="stage-card__num">02</div>
+          <h3 class="stage-card__title">Отборочный этап</h3>
+          <div class="stage-card__row">
+            <span class="badge">онлайн</span>
+            <span class="stage-card__date">22 мая → 29 мая 12:00</span>
+          </div>
+          <p class="stage-card__text">Работа над концепцией экосистемы AI-агентов: пользовательские сценарии, архитектура, продуктовая логика, оценка эффекта. Загружаешь решение в личном кабинете до дедлайна.</p>
+          <div class="stage-card__sub"><b>25 мая</b> — Q&amp;A-сессия с экспертами ИТ-кластера «Газпром нефть»: возможность задать вопросы по кейсу.</div>
+        </article>
       </div>
-      <div class="stage reveal">
-        <div class="stage__dot"></div>
-        <div class="stage__date">26 мая — 5 июня</div>
-        <div class="stage__title">Отбор и полуфинал</div>
-        <div class="stage__text">Эксперты оценивают решения по методологии, 20 сильнейших команд проходят в полуфинальный питч онлайн.</div>
+
+      <div class="stage-wrap stage-wrap--left reveal">
+        <span class="stage-burst" aria-hidden="true"></span>
+        <article class="stage-card">
+          <div class="stage-card__num">03</div>
+          <h3 class="stage-card__title">Объявление финалистов</h3>
+          <div class="stage-card__row">
+            <span class="badge">онлайн</span>
+            <span class="stage-card__date">2 июня</span>
+          </div>
+          <p class="stage-card__text">Эксперты оценивают решения по методологии. Лучшие команды получают приглашение на очный финал в Санкт-Петербурге.</p>
+        </article>
       </div>
-      <div class="stage reveal">
-        <div class="stage__dot"></div>
-        <div class="stage__date">12 июня</div>
-        <div class="stage__title">Финал и награждение</div>
-        <div class="stage__text">Топ-5 защищают решения перед топ-менеджментом партнёра, получают призы, стажировки и оффер.</div>
+
+      <div class="stage-wrap stage-wrap--right reveal">
+        <span class="stage-burst" aria-hidden="true"></span>
+        <article class="stage-card">
+          <div class="stage-card__num">04</div>
+          <h3 class="stage-card__title">Очный финал</h3>
+          <div class="stage-card__row">
+            <span class="badge badge--offline">очно · СПб</span>
+            <span class="stage-card__date">5 июня</span>
+          </div>
+          <p class="stage-card__text">Защита решений перед экспертами ИТ-кластера «Газпром нефть» в офисе компании в Санкт-Петербурге. Награждение, нетворкинг, обратная связь от индустрии.</p>
+        </article>
       </div>
     </div>
   </div>
@@ -1316,79 +1865,53 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      Prizes
      ======================================================================== -->
-<section class="section" id="prizes">
+<section class="section section--white" id="prizes">
   <div class="container">
     <div class="section-head reveal">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>Призы</div>
-      <h2 class="section-title">Призовой фонд — <span class="gradient-text">1 200 000 ₽</span></h2>
-      <p class="section-sub">Плюс оффер, стажировка и менторство от топ-менеджмента. Выплата — на команду, распределяется по внутренней договорённости.</p>
+      <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>призы и возможности</div>
     </div>
 
-    <div class="prizes">
-      <div class="prize prize--gold reveal">
-        <div class="prize__place">1</div>
-        <div class="prize__amount">600 000 ₽</div>
-        <ul class="prize__list">
-          <li>Оффер на стажировку у партнёра</li>
-          <li>Встреча с топ-менеджментом</li>
-          <li>Featured-кейс в медиа</li>
-          <li>Сертификат победителя</li>
-        </ul>
-      </div>
-      <div class="prize prize--silver reveal">
-        <div class="prize__place">2</div>
-        <div class="prize__amount">400 000 ₽</div>
-        <ul class="prize__list">
-          <li>Фаст-трек собеседования</li>
-          <li>Менторская сессия</li>
-          <li>Сертификат призёра</li>
-        </ul>
-      </div>
-      <div class="prize prize--bronze reveal">
-        <div class="prize__place">3</div>
-        <div class="prize__amount">200 000 ₽</div>
-        <ul class="prize__list">
-          <li>Рекомендация в HR-базу партнёра</li>
-          <li>Мерч чемпионата</li>
-          <li>Сертификат призёра</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Призы. Победителям подтверждено заказчиком: колонки Алиса + фаст-трек в летнюю школу.
+         Состав 2 и 3 места ждём от Стаса — пока заглушки. -->
+    <div class="carousel" data-carousel>
+      <div class="carousel__track" id="prizeTrack">
+        <article class="carousel__card" data-prize="all">
+          <h3 class="carousel__title">все участники</h3>
+          <ul class="carousel__list">
+            <li>Персональные дипломы об участии</li>
+            <li>Готовый кейс в резюме</li>
+            <li>Доступ к чату комьюнити чемпионата</li>
+          </ul>
+        </article>
 
-<!-- ========================================================================
-     Jury
-     ======================================================================== -->
-<section class="section" id="jury">
-  <div class="container">
-    <div class="section-head reveal section-head--center">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>Жюри</div>
-      <h2 class="section-title">Эксперты, <span class="gradient-text">которые оценивают</span></h2>
-      <p class="section-sub">Менеджеры направлений, архитекторы решений и директора по данным из компаний-партнёров.</p>
-    </div>
+        <article class="carousel__card" data-prize="prize">
+          <h3 class="carousel__title">призёры</h3>
+          <ul class="carousel__list">
+            <li>Персональные дипломы призёров (2-3 место)</li>
+            <li>Обратная связь по решению команды от экспертов</li>
+            <li>Состав призов уточняется</li>
+          </ul>
+        </article>
 
-    <div class="jury">
-      <div class="juror reveal">
-        <div class="juror__avatar">МС</div>
-        <div class="juror__name">Маргарита Самойлова</div>
-        <div class="juror__role">Head of CX, Банк-партнёр</div>
+        <article class="carousel__card" data-prize="winner">
+          <h3 class="carousel__title">победители</h3>
+          <ul class="carousel__list">
+            <li>Персональные дипломы победителей</li>
+            <li>Обратная связь по решению команды от экспертов</li>
+            <li>Умные колонки «Алиса» каждому участнику команды</li>
+            <li>Фаст-трек на летнюю школу ИТ-кластера «Газпром нефть»</li>
+          </ul>
+        </article>
       </div>
-      <div class="juror reveal">
-        <div class="juror__avatar">АК</div>
-        <div class="juror__name">Алексей Ковалёв</div>
-        <div class="juror__role">Data Science Lead</div>
+      <div class="carousel__nav">
+        <button class="carousel__btn" type="button" data-carousel-prev aria-label="Предыдущий">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <button class="carousel__btn" type="button" data-carousel-next aria-label="Следующий">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       </div>
-      <div class="juror reveal">
-        <div class="juror__avatar">ЕП</div>
-        <div class="juror__name">Елена Петрова</div>
-        <div class="juror__role">Product Director</div>
-      </div>
-      <div class="juror reveal">
-        <div class="juror__avatar">ИВ</div>
-        <div class="juror__name">Игорь Волков</div>
-        <div class="juror__role">Partner, Strategy Consulting</div>
-      </div>
+      <div class="carousel__dots" data-carousel-dots></div>
     </div>
   </div>
 </section>
@@ -1396,11 +1919,10 @@ input, textarea, select { font: inherit; }
 <!-- ========================================================================
      FAQ
      ======================================================================== -->
-<section class="section" id="faq">
+<section class="section section--white" id="faq">
   <div class="container">
     <div class="section-head reveal section-head--center">
-      <div class="eyebrow"><span class="eyebrow__dot"></span>FAQ</div>
-      <h2 class="section-title">Частые <span class="gradient-text">вопросы</span></h2>
+      <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>ответы на частые вопросы</div>
     </div>
 
     <div class="faq">
@@ -1409,35 +1931,71 @@ input, textarea, select { font: inherit; }
           <span>Кто может участвовать?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Студенты бакалавриата, магистратуры и специалитета (2–6 курс), а также выпускники вузов 2024–2026 годов. Команда — 3–4 человека, можно собрать её из разных вузов.</div>
+        <div class="faq__answer">Студенты бакалавриата, специалитета и магистратуры любых направлений подготовки.</div>
       </details>
+
       <details class="faq__item reveal">
         <summary class="faq__summary">
-          <span>Нужен ли опыт в банке или в ML?</span>
+          <span>Можно ли участвовать, если я не из IT?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Нет. Оцениваем продуктовое и системное мышление, работу с данными и умение защитить решение. Кейс даёт вводные по процессам и примеры структур таблиц — дальше твоя логика.</div>
+        <div class="faq__answer">Да. В кейсе важны не только технические решения, но и продуктовое мышление, UX, HR-подход, аналитика, бизнес-логика. Команды с разным бэкграундом обычно показывают самые сильные результаты.</div>
       </details>
+
       <details class="faq__item reveal">
         <summary class="faq__summary">
-          <span>В каком формате сдавать решение?</span>
+          <span>Сколько человек может быть в команде?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Загрузи презентацию в PDF (до 20 слайдов) через личный кабинет. При необходимости — ссылка на supplementary материал (код, расчёты, Figma). Приём решений закрывается 25 мая в 23:59 МСК.</div>
+        <div class="faq__answer">Рекомендуемый размер команды — 4–5 человек.</div>
       </details>
+
       <details class="faq__item reveal">
         <summary class="faq__summary">
-          <span>Можно ли одному, без команды?</span>
+          <span>Что, если у меня пока нет команды?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Можно подать заявку соло и попасть в мэтчинг команд в Telegram-чате чемпионата. Но финал выходит командным: формируй группу 3–4 человека до отправки решения.</div>
+        <div class="faq__answer">Регистрируйся на кейс-чемпионат и переходи в наши беседы для участников — там в отдельной теме можно будет найти себе команду.</div>
       </details>
+
       <details class="faq__item reveal">
         <summary class="faq__summary">
-          <span>Как будут оценивать?</span>
+          <span>Мы собрали команду и прошли регистрацию. Что дальше?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Четыре равных блока: глубина анализа и работа с данными · архитектурная состоятельность · экономический эффект и план внедрения · качество коммуникации и презентации.</div>
+        <div class="faq__answer">Вступай в чат кейс-чемпионата — там расписание, ответы экспертов и поддержка организаторов.</div>
+      </details>
+
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Можно ли использовать ChatGPT и другие AI-инструменты?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Да, использование AI-инструментов разрешено. Но решение должно отражать ваше понимание задачи и содержать собственную логику и идеи.</div>
+      </details>
+
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Кто будет оценивать решения?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Эксперты ИТ-кластера «Газпром нефть».</div>
+      </details>
+
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Можно ли задавать вопросы по кейсу во время чемпионата?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Да. Для участников будет организован чат и Q&amp;A-сессии с экспертами. Ближайшая — 25 мая.</div>
+      </details>
+
+      <details class="faq__item reveal">
+        <summary class="faq__summary">
+          <span>Что делать, если у нас нет опыта в HR или AI?</span>
+          <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+        </summary>
+        <div class="faq__answer">Это нормально — кейс рассчитан на студентов с разным уровнем подготовки. Главное — логика, исследование проблемы и командная работа.</div>
       </details>
     </div>
   </div>
@@ -1449,8 +2007,8 @@ input, textarea, select { font: inherit; }
 <section class="section" id="register">
   <div class="container">
     <div class="cta reveal">
-      <h2>Готов решать?</h2>
-      <p>Создай личный кабинет, получи полный текст кейса и загрузи решение, когда оно будет готово. Всё в одном месте.</p>
+      <h2>Регистрация до 21 мая, 23:59</h2>
+      <p>Создай личный кабинет команды, получи полный текст кейса и загрузи решение до 29 мая 12:00. Всё в одном месте.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn--primary btn--lg" type="button" onclick="openAuth('register')">Создать кабинет →</button>
         <button class="btn btn--ghost btn--lg" type="button" onclick="openAuth('login')">У меня уже есть аккаунт</button>
@@ -1467,15 +2025,15 @@ input, textarea, select { font: inherit; }
     <div class="footer__grid">
       <div class="footer__col footer__about">
         <div class="logo" style="margin-bottom:14px">
-          <span class="logo__mark">КЧ</span>
-          <span>Кейс<span style="opacity:.6">·</span>Чемпионат</span>
+          <span class="logo__mark">ит</span>
+          <span>ИТ-кластер<span style="opacity:.6"> × </span>HSCC</span>
         </div>
-        <div>Всероссийский студенческий кейс-чемпионат 2026. Реальные задачи от крупных компаний, честная оценка, прозрачный путь к стажировке.</div>
+        <div>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Реальная задача на стыке AI, HR и цифровых продуктов: создай корпоративную экосистему AI-агентов для T&amp;D.</div>
       </div>
       <div class="footer__col">
         <h4>Чемпионат</h4>
-        <a href="#about">О проекте</a>
-        <a href="#case">Кейс сезона</a>
+        <a href="#about">О чемпионате</a>
+        <a href="#case">Кейс</a>
         <a href="#stages">Этапы</a>
         <a href="#prizes">Призы</a>
       </div>
@@ -1484,18 +2042,17 @@ input, textarea, select { font: inherit; }
         <a href="#register">Регистрация</a>
         <a href="#faq">FAQ</a>
         <a href="javascript:openAuth('login')">Личный кабинет</a>
-        <a href="#">Правила</a>
       </div>
       <div class="footer__col">
         <h4>Контакты</h4>
+        <!-- TODO: подставить актуальные контакты от заказчика -->
         <a href="mailto:hello@case-champ.ru">hello@case-champ.ru</a>
-        <a href="https://t.me/casechamp" target="_blank" rel="noopener">Telegram</a>
-        <a href="https://vk.com/casechamp" target="_blank" rel="noopener">ВКонтакте</a>
+        <a href="#" target="_blank" rel="noopener">Telegram-чат</a>
       </div>
     </div>
     <div class="footer__bottom">
-      <div>© 2026 Кейс-Чемпионат. Все права защищены.</div>
-      <div>Сделано для молодых специалистов 🧡</div>
+      <div>© 2026 ИТ-кластер «Газпром нефть» × HSCC. Все права защищены.</div>
+      <div>Финал — 5 июня, Санкт-Петербург</div>
     </div>
   </div>
 </footer>
@@ -1608,8 +2165,8 @@ input, textarea, select { font: inherit; }
     </div>
 
     <div class="dash-grid" style="margin-top:20px">
-      <div class="dash-cell"><small>Приём решений до</small><b>25 мая, 23:59 МСК</b></div>
-      <div class="dash-cell"><small>Кейс</small><b>Маршрут построен</b></div>
+      <div class="dash-cell"><small>Приём решений до</small><b>29 мая, 12:00 МСК</b></div>
+      <div class="dash-cell"><small>Кейс</small><b>AI-агенты для T&amp;D</b></div>
       <div class="dash-cell"><small>Отправок в истории</small><b id="dashCount">0</b></div>
       <div class="dash-cell"><small>Лимит файла</small><b id="dashLimit">25 МБ · PDF</b></div>
     </div>
@@ -1626,7 +2183,7 @@ input, textarea, select { font: inherit; }
         </div>
         <div class="field">
           <label for="subTitle">Название решения</label>
-          <input class="input" type="text" id="subTitle" placeholder="Интеллектуальная маршрутизация на базе ML" required />
+          <input class="input" type="text" id="subTitle" placeholder="AI-агент для онбординга сотрудников" required />
         </div>
         <div class="field">
           <label for="subNotes">Краткая аннотация (до 500 знаков)</label>
@@ -2046,6 +2603,71 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 (function initMarquee() { const t = $('#marquee'); t.innerHTML += t.innerHTML; })();
+
+/* ==========================================================================
+   Prize carousel — snap-scroll + nav buttons + active card detection
+   ========================================================================== */
+(function initCarousel() {
+  document.querySelectorAll('[data-carousel]').forEach(root => {
+    const track = root.querySelector('.carousel__track');
+    const cards = Array.from(track.querySelectorAll('.carousel__card'));
+    const prev  = root.querySelector('[data-carousel-prev]');
+    const next  = root.querySelector('[data-carousel-next]');
+    const dotsRoot = root.querySelector('[data-carousel-dots]');
+    if (!track || !cards.length) return;
+
+    cards.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'carousel__dot';
+      d.setAttribute('aria-label', 'Карточка ' + (i + 1));
+      d.addEventListener('click', () => scrollToCard(i));
+      dotsRoot.appendChild(d);
+    });
+    const dots = Array.from(dotsRoot.children);
+
+    function scrollToCard(i) {
+      const card = cards[i];
+      if (!card) return;
+      const left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
+      track.scrollTo({ left, behavior: 'smooth' });
+    }
+
+    function updateActive() {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      cards.forEach((c, i) => {
+        const cCenter = c.offsetLeft + c.clientWidth / 2;
+        const d = Math.abs(cCenter - center);
+        if (d < bestDist) { bestDist = d; bestIdx = i; }
+      });
+      cards.forEach((c, i) => c.classList.toggle('is-active', i === bestIdx));
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === bestIdx));
+      return bestIdx;
+    }
+
+    track.addEventListener('scroll', () => {
+      clearTimeout(updateActive._t);
+      updateActive._t = setTimeout(updateActive, 60);
+    }, { passive: true });
+
+    prev && prev.addEventListener('click', () => {
+      const i = updateActive();
+      scrollToCard(Math.max(0, i - 1));
+    });
+    next && next.addEventListener('click', () => {
+      const i = updateActive();
+      scrollToCard(Math.min(cards.length - 1, i + 1));
+    });
+
+    // initial: center on second card if present, else first
+    requestAnimationFrame(() => {
+      scrollToCard(cards.length > 1 ? 1 : 0);
+      setTimeout(updateActive, 400);
+    });
+  });
+})();
 
 function updateNavAuth(user) {
   $('#loginBtn').textContent = user ? ('Кабинет · ' + user.name.split(' ')[0]) : 'Личный кабинет';
