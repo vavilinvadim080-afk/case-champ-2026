@@ -1647,6 +1647,56 @@ body { background: var(--bg-deep-blue); }
   .stage-card__num { font-size: 48px; }
   .carousel__card { flex-basis: 88vw; padding: 24px 22px; }
 }
+
+/* =========================================================================
+   v3 · GPN logo + mobile nav fix + case-card contrast
+   ========================================================================= */
+/* Логотип-картинка (заменяет старый text-mark) */
+.logo--gpn { display: inline-flex; align-items: center; gap: 0; }
+.logo--gpn .logo__img {
+  height: 30px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);  /* делает синий лого белым на тёмной шапке */
+}
+/* На светлом футере оставляем оригинальный синий цвет логотипа */
+.footer .logo--gpn .logo__img { filter: none; }
+
+/* Mobile nav: сжимаем лого, прячем «Личный кабинет», компактим «Участвовать» */
+@media (max-width: 720px) {
+  .logo--gpn .logo__img { height: 22px; }
+  #loginBtn { display: none; }
+  .nav__actions .btn--primary { padding: 0 14px; height: 38px; font-size: 13px; }
+}
+
+/* Case-card на светлой секции: повышаем контраст значений */
+.section--light .case-card,
+.section--white .case-card {
+  background:
+    linear-gradient(135deg, rgba(108,76,255,.18), rgba(255,77,158,.10)),
+    rgba(11,18,51,.96);
+}
+.section--light .case-card .case-card__desc,
+.section--white .case-card .case-card__desc { color: rgba(255,255,255,.85); }
+.section--light .case-card .case-card__list li,
+.section--white .case-card .case-card__list li { color: #fff; }
+.section--light .case-card__side,
+.section--white .case-card__side {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+}
+.section--light .case-card .mini-stat,
+.section--white .case-card .mini-stat { border-bottom-color: rgba(255,255,255,.18); }
+.section--light .case-card .mini-stat span,
+.section--white .case-card .mini-stat span { color: rgba(255,255,255,.7); }
+.section--light .case-card .mini-stat b,
+.section--white .case-card .mini-stat b { color: #fff; font-weight: 700; }
+
+@media (max-width: 520px) {
+  .case-card__side { padding: 18px; }
+  .mini-stat { padding: 10px 0; font-size: 13px; }
+  .mini-stat b { font-size: 14px; }
+}
 </style>
 </head>
 <body>
@@ -1658,9 +1708,8 @@ body { background: var(--bg-deep-blue); }
      ======================================================================== -->
 <header class="nav" id="nav">
   <div class="nav__inner">
-    <a href="#" class="logo" aria-label="Кейс-чемпионат ИТ-кластера Газпром нефть × HSCC">
-      <span class="logo__mark">ит</span>
-      <span>ИТ-кластер<span style="opacity:.6"> × </span>HSCC</span>
+    <a href="#" class="logo logo--gpn" aria-label="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC">
+      <img src="/gpn-energy.svg" alt="Газпром нефть · ENERGY" class="logo__img" />
     </a>
     <nav class="nav__menu" id="navMenu">
       <a href="#about">О чемпионате</a>
@@ -2024,9 +2073,8 @@ body { background: var(--bg-deep-blue); }
   <div class="container">
     <div class="footer__grid">
       <div class="footer__col footer__about">
-        <div class="logo" style="margin-bottom:14px">
-          <span class="logo__mark">ит</span>
-          <span>ИТ-кластер<span style="opacity:.6"> × </span>HSCC</span>
+        <div class="logo logo--gpn" style="margin-bottom:14px">
+          <img src="/gpn-energy.svg" alt="Газпром нефть · ENERGY" class="logo__img" />
         </div>
         <div>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Реальная задача на стыке AI, HR и цифровых продуктов: создай корпоративную экосистему AI-агентов для T&amp;D.</div>
       </div>
