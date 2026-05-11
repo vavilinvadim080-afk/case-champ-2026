@@ -1669,33 +1669,118 @@ body { background: var(--bg-deep-blue); }
   .nav__actions .btn--primary { padding: 0 14px; height: 38px; font-size: 13px; }
 }
 
-/* Case-card на светлой секции: повышаем контраст значений */
+/* Case-card на светлой секции: ВСЕ тексты внутри тёмной карточки — белые */
 .section--light .case-card,
 .section--white .case-card {
   background:
     linear-gradient(135deg, rgba(108,76,255,.18), rgba(255,77,158,.10)),
     rgba(11,18,51,.96);
+  padding: 48px;
 }
+/* Заголовок карточки — крупный белый */
+.section--light .case-card .case-card__title,
+.section--white .case-card .case-card__title {
+  color: #fff;
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 1.18;
+  margin-bottom: 18px;
+}
+/* Описание */
 .section--light .case-card .case-card__desc,
-.section--white .case-card .case-card__desc { color: rgba(255,255,255,.85); }
+.section--white .case-card .case-card__desc {
+  color: rgba(255,255,255,.82);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+/* Бейдж-плашка над заголовком — белый текст на полупрозрачном цветном фоне */
+.section--light .case-card .case-card__tag,
+.section--white .case-card .case-card__tag {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 7px 14px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+/* Список задач — белый текст, акцентные маркеры */
+.section--light .case-card .case-card__list,
+.section--white .case-card .case-card__list { gap: 14px; }
 .section--light .case-card .case-card__list li,
-.section--white .case-card .case-card__list li { color: #fff; }
+.section--white .case-card .case-card__list li {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.section--light .case-card .case-card__list li::before,
+.section--white .case-card .case-card__list li::before {
+  width: 7px; height: 7px;
+  background: linear-gradient(135deg, var(--pink-burst), var(--violet-pill-strong));
+  margin-top: 8px;
+}
+/* Кнопка «Взять в работу» — оставляем primary, добавим больший отступ */
+.section--light .case-card .btn,
+.section--white .case-card .btn { margin-top: 8px; }
+
+/* Aside-блок с цифрами — стеклянная панель, светлая надпись-шапка */
 .section--light .case-card__side,
 .section--white .case-card__side {
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.16);
+  padding: 26px;
+}
+.section--light .case-card__side::before,
+.section--white .case-card__side::before {
+  content: "Кейс в цифрах";
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 10px;
 }
 .section--light .case-card .mini-stat,
-.section--white .case-card .mini-stat { border-bottom-color: rgba(255,255,255,.18); }
+.section--white .case-card .mini-stat {
+  border-bottom-color: rgba(255,255,255,.14);
+  padding: 13px 0;
+  align-items: baseline;
+  gap: 16px;
+}
 .section--light .case-card .mini-stat span,
-.section--white .case-card .mini-stat span { color: rgba(255,255,255,.7); }
+.section--white .case-card .mini-stat span {
+  color: rgba(255,255,255,.65);
+  font-size: 13px;
+}
 .section--light .case-card .mini-stat b,
-.section--white .case-card .mini-stat b { color: #fff; font-weight: 700; }
+.section--white .case-card .mini-stat b {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14.5px;
+  text-align: right;
+}
 
-@media (max-width: 520px) {
-  .case-card__side { padding: 18px; }
-  .mini-stat { padding: 10px 0; font-size: 13px; }
-  .mini-stat b { font-size: 14px; }
+/* Заголовок секции «Кейс» на светлом фоне — gradient-text сделаем поярче */
+.section--light .section-title .gradient-text,
+.section--white .section-title .gradient-text {
+  background: linear-gradient(135deg, var(--pink-burst) 0%, var(--violet-pill-strong) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .section--light .case-card,
+  .section--white .case-card { padding: 28px 22px; }
+  .section--light .case-card .case-card__side,
+  .section--white .case-card .case-card__side { padding: 20px; }
+  .case-card__grid { gap: 24px !important; }
+  .section--light .case-card .mini-stat,
+  .section--white .case-card .mini-stat { padding: 10px 0; gap: 12px; }
+  .section--light .case-card .mini-stat span,
+  .section--white .case-card .mini-stat span { font-size: 12.5px; }
+  .section--light .case-card .mini-stat b,
+  .section--white .case-card .mini-stat b { font-size: 13.5px; }
 }
 </style>
 </head>
