@@ -133,17 +133,24 @@ pm2 save && pm2 startup
 ## Структура проекта
 
 ```
-Лендинг Кейс-Чемпинат/
-├── index.html           ← фронт (HTML+CSS+JS, ~2000 строк в одном файле)
-├── server.js            ← Express API + SQLite
+case-champ-2026/
+├── public/              ← статика, отдаваемая HTTP (всё, что должно быть публичным)
+│   ├── index.html       ← фронт (HTML+CSS+JS, всё в одном файле)
+│   └── gpn-energy.svg   ← логотип Газпром нефти
+├── server.js            ← Express API + SQLite — НЕ отдаётся через HTTP
 ├── package.json         ← зависимости и npm start
+├── package-lock.json
 ├── README.md            ← этот файл
-├── .gitignore           ← data/, node_modules/
-├── data/                ← создаётся при запуске
-│   ├── app.db
-│   └── uploads/
+├── case-example.pdf     ← образец кейса (НЕ публичный)
+├── .gitignore           ← data/, node_modules/, .env
+├── data/                ← создаётся при запуске, gitignore + не отдаётся через HTTP
+│   ├── app.db           ← SQLite с пользователями и сессиями
+│   └── uploads/         ← загруженные PDF
 └── node_modules/        ← после npm install
 ```
+
+Важно: только `public/` доступно через HTTP. Корень проекта (`server.js`,
+`package.json`, `data/`, `.env`) полностью изолирован от веба.
 
 ## Что проверено
 

@@ -5,14 +5,19 @@
  * Откроет:  http://localhost:3000
  *
  * Стек:
- *   - Express         (HTTP + роуты + статика)
- *   - node:sqlite     (встроенный SQLite, Node 22.5+, без нативных модулей)
- *   - multer          (приём multipart/form-data, лимит файла на уровне сервера)
- *   - node:crypto     (scrypt-хэши паролей, uuid-токены сессий)
+ *   - Express              (HTTP + роуты)
+ *   - helmet               (security headers + CSP)
+ *   - express-rate-limit   (защита от брутфорса)
+ *   - node:sqlite          (встроенный SQLite, Node 22.5+)
+ *   - multer               (приём multipart/form-data)
+ *   - node:crypto (scrypt) (хэши паролей, токены сессий)
  *
  * Данные на диске:
  *   data/app.db                 — SQLite-база
  *   data/uploads/<timestamp>_*  — PDF-решения
+ *
+ * Статика (HTML/CSS/JS/SVG) лежит в `public/`. Корень проекта
+ * НЕ раздаётся — иначе утекли бы server.js, package.json, БД.
  */
 
 'use strict';
@@ -20,9 +25,14 @@
 const path     = require('node:path');
 const fs       = require('node:fs');
 const crypto   = require('node:crypto');
+const { promisify } = require('node:util');
 const { DatabaseSync } = require('node:sqlite');
 const express  = require('express');
 const multer   = require('multer');
+const helmet   = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+const scryptAsync = promisify(crypto.scrypt);
 
 /* ==========================================================================
    Конфигурация (можно переопределить через переменные окружения)
@@ -31,9 +41,11 @@ const PORT             = parseInt(process.env.PORT || '3000', 10);
 const DATA_DIR         = process.env.DATA_DIR || path.join(__dirname, 'data');
 const UPLOADS_DIR      = path.join(DATA_DIR, 'uploads');
 const DB_FILE          = path.join(DATA_DIR, 'app.db');
+const PUBLIC_DIR       = path.join(__dirname, 'public');
 const MAX_FILE_MB      = parseInt(process.env.MAX_FILE_MB || '25', 10);
 const MAX_FILE_BYTES   = MAX_FILE_MB * 1024 * 1024;
 const SESSION_TTL_MS   = 30 * 24 * 60 * 60 * 1000; // 30 дней
+const SCRYPT_N         = 16384; // дефолт scrypt — баланс безопасность/CPU
 
 /* ==========================================================================
    Bootstrap: каталоги и БД
@@ -87,21 +99,31 @@ setInterval(() => {
 }, 60 * 60 * 1000).unref();
 
 /* ==========================================================================
-   Криптография
+   Криптография (async + timing-safe)
    ========================================================================== */
-function hashPassword(pass) {
+async function hashPassword(pass) {
   const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.scryptSync(pass, salt, 64).toString('hex');
-  return { hash, salt };
+  const buf  = await scryptAsync(pass, salt, 64, { N: SCRYPT_N });
+  return { hash: buf.toString('hex'), salt };
 }
-function verifyPassword(pass, hash, salt) {
+
+async function verifyPassword(pass, hash, salt) {
   try {
-    const test = crypto.scryptSync(pass, salt, 64);
+    const test   = await scryptAsync(pass, salt, 64, { N: SCRYPT_N });
     const stored = Buffer.from(hash, 'hex');
     return test.length === stored.length && crypto.timingSafeEqual(test, stored);
   } catch { return false; }
 }
+
 function newToken() { return crypto.randomBytes(32).toString('hex'); }
+
+/* Dummy hash — для защиты от timing-атаки enumeration email.
+   На login всегда делаем scrypt, даже если юзер не найден. */
+const DUMMY = (() => {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync('timing-attack-protection', salt, 64, { N: SCRYPT_N }).toString('hex');
+  return { hash, salt };
+})();
 
 /* ==========================================================================
    Multer — приём файла с лимитами
@@ -112,6 +134,7 @@ const storage = multer.diskStorage({
     const safe = (file.originalname || 'solution.pdf')
       .normalize('NFKD')
       .replace(/[^\w.\-]+/g, '_')
+      .replace(/\.{2,}/g, '.')
       .slice(0, 80);
     cb(null, Date.now() + '_' + safe);
   }
@@ -132,16 +155,87 @@ const upload = multer({
 });
 
 /* ==========================================================================
-   Express
+   Express + middleware безопасности
    ========================================================================== */
 const app = express();
 app.disable('x-powered-by');
+
+// Railway/Timeweb-edge кладут реальный IP в X-Forwarded-For
+app.set('trust proxy', 1);
+
+/* helmet: security headers + CSP.
+   'unsafe-inline' для style/script — потому что у нас inline CSS/JS в index.html.
+   Можно убрать, если позже вынесем <style>/<script> во внешние файлы. */
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:    ["'self'"],
+      styleSrc:      ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc:       ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc:     ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      imgSrc:        ["'self'", "data:"],
+      connectSrc:    ["'self'"],
+      frameAncestors:["'none'"],
+      objectSrc:     ["'none'"],
+      baseUri:       ["'self'"],
+      formAction:    ["'self'"],
+    }
+  },
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  crossOriginOpenerPolicy:   { policy: "same-origin" },
+  referrerPolicy:            { policy: "strict-origin-when-cross-origin" },
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: false }
+}));
+
 app.use(express.json({ limit: '32kb' }));
 
-/* Раздача клиента */
-app.use(express.static(__dirname, { index: 'index.html', extensions: ['html'] }));
+/* Defense in depth: даже если кто-то случайно положит файл в корень — не отдадим */
+app.use((req, _res, next) => {
+  // Нормализуем путь, чтобы поймать "/./data" и "/../data" попытки
+  const p = path.posix.normalize(req.path);
+  if (/^\/(data|node_modules|\.git|server\.js|package(-lock)?\.json|README\.md|\.gitignore|\.env)/i.test(p)) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
+  next();
+});
 
-/* Конфиг для клиента (чтобы не дублировать константы) */
+/* ---- Rate limiters ---- */
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,   // 15 минут
+  max: 8,                      // не больше 8 попыток
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Слишком много попыток входа. Подожди 15 минут.' },
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,   // 1 час
+  max: 5,                      // 5 регистраций с IP в час
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Слишком много регистраций с этого IP. Попробуй позже.' },
+});
+
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,   // 1 час
+  max: 30,                     // 30 загрузок/час
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Слишком много загрузок. Подожди час.' },
+});
+
+/* ---- Раздача клиента (только из public/) ---- */
+app.use(express.static(PUBLIC_DIR, {
+  index: 'index.html',
+  extensions: ['html'],
+  dotfiles: 'deny',
+  maxAge: '1h',
+}));
+
+/* ---- Конфиг для клиента ---- */
 app.get('/api/config', (_req, res) => {
   res.json({ maxFileMB: MAX_FILE_MB });
 });
@@ -160,53 +254,72 @@ function auth(req, res, next) {
 }
 
 /* ---- Регистрация ---- */
-app.post('/api/register', (req, res) => {
-  let { email, name, university, team, password } = req.body || {};
-  email = (email || '').trim().toLowerCase();
-  name  = (name  || '').trim();
-  university = (university || '').trim();
-  team = (team || '').trim();
+app.post('/api/register', registerLimiter, async (req, res, next) => {
+  try {
+    let { email, name, university, team, password } = req.body || {};
+    email = (email || '').trim().toLowerCase();
+    name  = (name  || '').trim();
+    university = (university || '').trim();
+    team = (team || '').trim();
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return res.status(400).json({ error: 'Некорректный email' });
-  if (name.length < 2 || name.length > 80)
-    return res.status(400).json({ error: 'Укажи имя (2–80 символов)' });
-  if (!password || password.length < 6)
-    return res.status(400).json({ error: 'Пароль должен быть от 6 символов' });
-  if (team.length > 60)
-    return res.status(400).json({ error: 'Название команды слишком длинное' });
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return res.status(400).json({ error: 'Некорректный email' });
+    if (name.length < 2 || name.length > 80)
+      return res.status(400).json({ error: 'Укажи имя (2–80 символов)' });
+    if (!password || password.length < 6)
+      return res.status(400).json({ error: 'Пароль должен быть от 6 символов' });
+    if (password.length > 200)
+      return res.status(400).json({ error: 'Пароль слишком длинный' });
+    if (team.length > 60)
+      return res.status(400).json({ error: 'Название команды слишком длинное' });
+    if (university.length > 120)
+      return res.status(400).json({ error: 'Название вуза слишком длинное' });
 
-  const exists = db.prepare('SELECT 1 FROM users WHERE email = ?').get(email);
-  if (exists) return res.status(409).json({ error: 'Пользователь с таким email уже зарегистрирован' });
+    const exists = db.prepare('SELECT 1 FROM users WHERE email = ?').get(email);
+    if (exists) return res.status(409).json({ error: 'Пользователь с таким email уже зарегистрирован' });
 
-  const { hash, salt } = hashPassword(password);
-  db.prepare(`
-    INSERT INTO users (email, name, university, team, pass_hash, pass_salt, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(email, name, university || null, team || null, hash, salt, Date.now());
+    const { hash, salt } = await hashPassword(password);
+    db.prepare(`
+      INSERT INTO users (email, name, university, team, pass_hash, pass_salt, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(email, name, university || null, team || null, hash, salt, Date.now());
 
-  const token = newToken();
-  db.prepare('INSERT INTO sessions (token, user_email, created_at, expires_at) VALUES (?, ?, ?, ?)')
-    .run(token, email, Date.now(), Date.now() + SESSION_TTL_MS);
+    const token = newToken();
+    db.prepare('INSERT INTO sessions (token, user_email, created_at, expires_at) VALUES (?, ?, ?, ?)')
+      .run(token, email, Date.now(), Date.now() + SESSION_TTL_MS);
 
-  res.json({ ok: true, token, user: { email, name, university, team } });
+    res.json({ ok: true, token, user: { email, name, university, team } });
+  } catch (e) { next(e); }
 });
 
-/* ---- Вход ---- */
-app.post('/api/login', (req, res) => {
-  const email    = (req.body?.email    || '').trim().toLowerCase();
-  const password = req.body?.password  || '';
-  if (!email || !password) return res.status(400).json({ error: 'Email и пароль обязательны' });
+/* ---- Вход (timing-safe: всегда выполняем scrypt) ---- */
+app.post('/api/login', loginLimiter, async (req, res, next) => {
+  try {
+    const email    = (req.body?.email    || '').trim().toLowerCase();
+    const password = req.body?.password  || '';
+    if (!email || !password) return res.status(400).json({ error: 'Email и пароль обязательны' });
+    if (password.length > 200) return res.status(401).json({ error: 'Неверный email или пароль' });
 
-  const u = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!u || !verifyPassword(password, u.pass_hash, u.pass_salt))
-    return res.status(401).json({ error: 'Неверный email или пароль' });
+    const u = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
-  const token = newToken();
-  db.prepare('INSERT INTO sessions (token, user_email, created_at, expires_at) VALUES (?, ?, ?, ?)')
-    .run(token, email, Date.now(), Date.now() + SESSION_TTL_MS);
+    // Защита от timing-атаки: всегда выполняем scrypt, даже если юзера нет —
+    // иначе атакующий по времени ответа перечислит зарегистрированные email.
+    let valid = false;
+    if (u) {
+      valid = await verifyPassword(password, u.pass_hash, u.pass_salt);
+    } else {
+      await verifyPassword(password, DUMMY.hash, DUMMY.salt);
+    }
 
-  res.json({ ok: true, token, user: { email: u.email, name: u.name, university: u.university, team: u.team } });
+    if (!u || !valid)
+      return res.status(401).json({ error: 'Неверный email или пароль' });
+
+    const token = newToken();
+    db.prepare('INSERT INTO sessions (token, user_email, created_at, expires_at) VALUES (?, ?, ?, ?)')
+      .run(token, email, Date.now(), Date.now() + SESSION_TTL_MS);
+
+    res.json({ ok: true, token, user: { email: u.email, name: u.name, university: u.university, team: u.team } });
+  } catch (e) { next(e); }
 });
 
 /* ---- Выход ---- */
@@ -235,7 +348,7 @@ app.get('/api/me', auth, (req, res) => {
   res.json({ user: u, team: { name: u.team, latest, totalSubmissions: count } });
 });
 
-/* ---- Обновить команду (если не указана при регистрации) ---- */
+/* ---- Обновить команду ---- */
 app.post('/api/me/team', auth, (req, res) => {
   const team = (req.body?.team || '').trim();
   if (team.length < 2 || team.length > 60)
@@ -245,7 +358,7 @@ app.post('/api/me/team', auth, (req, res) => {
 });
 
 /* ---- Отправить решение ---- */
-app.post('/api/submission', auth, (req, res, next) => {
+app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
   upload.single('file')(req, res, (err) => {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE')
@@ -258,23 +371,26 @@ app.post('/api/submission', auth, (req, res, next) => {
   });
 }, (req, res) => {
   const u = db.prepare('SELECT team FROM users WHERE email = ?').get(req.userEmail);
-  if (!u) return res.status(404).json({ error: 'Пользователь не найден' });
+  if (!u) return cleanupAndFail(req, res, 404, 'Пользователь не найден');
 
   const team  = (req.body?.team  || u.team || '').trim();
-  const title = (req.body?.title || '').trim();
+  const title = (req.body?.title || '').trim().slice(0, 200);
   const notes = (req.body?.notes || '').trim().slice(0, 2000);
 
-  if (!team)  return cleanupAndFail(req, res, 400, 'Укажи название команды');
-  if (!title) return cleanupAndFail(req, res, 400, 'Укажи название решения');
-  if (!req.file) return cleanupAndFail(req, res, 400, 'Прикрепи PDF-файл с решением');
+  if (!team || team.length > 60)   return cleanupAndFail(req, res, 400, 'Укажи название команды (до 60 символов)');
+  if (!title)                       return cleanupAndFail(req, res, 400, 'Укажи название решения');
+  if (!req.file)                    return cleanupAndFail(req, res, 400, 'Прикрепи PDF-файл с решением');
 
   // Если у пользователя ещё не была указана команда — запишем
   if (!u.team) db.prepare('UPDATE users SET team = ? WHERE email = ?').run(team, req.userEmail);
 
+  // file_path сохраняем как basename — никаких '../' в БД
+  const safePath = path.basename(req.file.path);
+
   const info = db.prepare(`
     INSERT INTO submissions (team, user_email, title, notes, file_name, file_path, file_size, status, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, 'Принято', ?)
-  `).run(team, req.userEmail, title, notes, req.file.originalname, path.basename(req.file.path), req.file.size, Date.now());
+  `).run(team, req.userEmail, title, notes, req.file.originalname, safePath, req.file.size, Date.now());
 
   const row = db.prepare(`
     SELECT id, team, user_email, title, notes, file_name, file_size, status, created_at
@@ -304,14 +420,20 @@ app.get('/api/submissions', auth, (req, res) => {
 /* ---- Скачать файл решения ---- */
 app.get('/api/submission/:id/download', auth, (req, res) => {
   const id = parseInt(req.params.id, 10);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: 'bad id' });
+  if (!Number.isFinite(id) || id < 1) return res.status(400).json({ error: 'bad id' });
 
   const u = db.prepare('SELECT team FROM users WHERE email = ?').get(req.userEmail);
   const sub = db.prepare('SELECT * FROM submissions WHERE id = ?').get(id);
   if (!sub) return res.status(404).json({ error: 'Решение не найдено' });
   if (!u || u.team !== sub.team) return res.status(403).json({ error: 'Доступ только участникам команды' });
 
-  const filePath = path.join(UPLOADS_DIR, sub.file_path);
+  // Path traversal defense — file_path должен быть просто именем файла,
+  // никаких '/', '\', '..' не пропускаем
+  const fileBase = path.basename(sub.file_path);
+  if (fileBase !== sub.file_path) return res.status(400).json({ error: 'invalid path' });
+  const filePath = path.join(UPLOADS_DIR, fileBase);
+  if (!filePath.startsWith(UPLOADS_DIR + path.sep))
+    return res.status(400).json({ error: 'invalid path' });
   if (!fs.existsSync(filePath)) return res.status(410).json({ error: 'Файл удалён с диска' });
 
   res.download(filePath, sub.file_name);
@@ -324,10 +446,12 @@ app.get('/api/health', (_req, res) => res.json({ ok: true, time: new Date().toIS
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Не найдено' }));
 
 /* ==========================================================================
-   Global error handler — последняя линия обороны, чтобы сервер не падал
+   Global error handler — последняя линия обороны
+   Не светим стек/детали наружу.
    ========================================================================== */
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, _next) => {
+  if (err && err.status === 404) return res.status(404).end();
   console.error('[unhandled]', err);
   if (res.headersSent) return;
   if (err && err.code === 'LIMIT_FILE_SIZE')
@@ -335,7 +459,7 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ error: 'Внутренняя ошибка сервера' });
 });
 
-process.on('uncaughtException', e => console.error('[uncaught]', e));
+process.on('uncaughtException',  e => console.error('[uncaught]', e));
 process.on('unhandledRejection', e => console.error('[unhandledRejection]', e));
 
 /* ==========================================================================
@@ -345,6 +469,7 @@ app.listen(PORT, () => {
   console.log(`\n  ▶ Кейс-Чемпионат 2026`);
   console.log(`  ▶ http://localhost:${PORT}`);
   console.log(`  ▶ Лимит файла: ${MAX_FILE_MB} МБ`);
+  console.log(`  ▶ Public:     ${PUBLIC_DIR}`);
   console.log(`  ▶ БД:         ${DB_FILE}`);
   console.log(`  ▶ Файлы:      ${UPLOADS_DIR}\n`);
 });
