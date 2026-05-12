@@ -154,6 +154,22 @@ const upload = multer({
   }
 });
 
+/* Magic bytes — проверяем содержимое файла, а не доверяем mimetype/расширению.
+   PDF spec 7.5.2: подпись `%PDF-` должна встретиться в первых 1024 байтах. */
+function isPdfMagic(filePath) {
+  let fd;
+  try {
+    fd = fs.openSync(filePath, 'r');
+    const buf = Buffer.alloc(1024);
+    const bytesRead = fs.readSync(fd, buf, 0, 1024, 0);
+    return buf.slice(0, bytesRead).includes('%PDF-');
+  } catch {
+    return false;
+  } finally {
+    if (fd !== undefined) try { fs.closeSync(fd); } catch {}
+  }
+}
+
 /* ==========================================================================
    Express + middleware безопасности
    ========================================================================== */
@@ -380,6 +396,9 @@ app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
   if (!team || team.length > 60)   return cleanupAndFail(req, res, 400, 'Укажи название команды (до 60 символов)');
   if (!title)                       return cleanupAndFail(req, res, 400, 'Укажи название решения');
   if (!req.file)                    return cleanupAndFail(req, res, 400, 'Прикрепи PDF-файл с решением');
+
+  // Не доверяем mimetype/расширению — проверяем содержимое
+  if (!isPdfMagic(req.file.path))   return cleanupAndFail(req, res, 415, 'Файл не похож на PDF — нужен реальный PDF, а не переименованный документ');
 
   // Если у пользователя ещё не была указана команда — запишем
   if (!u.team) db.prepare('UPDATE users SET team = ? WHERE email = ?').run(team, req.userEmail);
