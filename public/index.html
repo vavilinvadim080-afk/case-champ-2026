@@ -1520,9 +1520,11 @@ body { background: var(--bg-deep-blue); }
   gap: 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 30px 12% 40px;
+  padding: 60px 18% 80px;
   scrollbar-width: none;
   scroll-behavior: smooth;
+  perspective: 1500px;
+  perspective-origin: center 45%;
 }
 .carousel__track::-webkit-scrollbar { display: none; }
 .carousel__card {
@@ -1533,15 +1535,16 @@ body { background: var(--bg-deep-blue); }
   padding: 32px 28px;
   border: 1px solid var(--light-card-border);
   box-shadow: 0 16px 40px -16px rgba(108,76,255,.18);
-  transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+  transition: box-shadow .35s ease, border-color .35s ease;
   display: flex;
   flex-direction: column;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 .carousel__card.is-active {
-  transform: scale(1.08);
   box-shadow: 0 32px 80px -20px rgba(255,77,158,.35);
   border-color: rgba(255,77,158,.25);
-  z-index: 2;
 }
 .carousel__card .prize__place,
 .carousel__card .prize__amount { display: none; } /* override legacy if shown */
@@ -1638,14 +1641,16 @@ body { background: var(--bg-deep-blue); }
   .about-grid { grid-template-columns: 1fr; gap: 28px; }
   .stage-card { width: 100%; }
   .stage-card--left, .stage-card--right { justify-self: stretch; }
-  .carousel__track { padding: 24px 6% 32px; }
+  .carousel__track { padding: 50px 10% 70px; perspective: 1200px; }
   .carousel__card { flex-basis: 280px; }
   .hero--burst .hero__title { font-size: clamp(34px, 9vw, 64px); }
 }
 @media (max-width: 520px) {
   .stage-card { padding: 24px 22px; }
   .stage-card__num { font-size: 48px; }
+  .carousel__track { padding: 28px 6% 40px; perspective: none; }
   .carousel__card { flex-basis: 88vw; padding: 24px 22px; }
+  .carousel__card { transform: none !important; opacity: 1 !important; }
 }
 
 /* =========================================================================
@@ -2758,38 +2763,67 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       track.scrollTo({ left, behavior: 'smooth' });
     }
 
-    function updateActive() {
+    let rafId = null;
+    function applyCoverflow() {
+      rafId = null;
+      const narrow = window.innerWidth <= 520;
+      const factor = window.innerWidth <= 960 ? 0.7 : 1;
       const center = track.scrollLeft + track.clientWidth / 2;
+      const cardW = cards[0].clientWidth + 24;
       let bestIdx = 0;
       let bestDist = Infinity;
-      cards.forEach((c, i) => {
-        const cCenter = c.offsetLeft + c.clientWidth / 2;
-        const d = Math.abs(cCenter - center);
-        if (d < bestDist) { bestDist = d; bestIdx = i; }
+
+      cards.forEach((card, i) => {
+        const cCenter = card.offsetLeft + card.clientWidth / 2;
+        const delta = cCenter - center;
+        const absDist = Math.abs(delta);
+        if (absDist < bestDist) { bestDist = absDist; bestIdx = i; }
+
+        if (narrow) {
+          card.style.transform = '';
+          card.style.opacity = '';
+          card.style.zIndex = '';
+          return;
+        }
+
+        const norm = delta / cardW;
+        const absNorm = Math.min(Math.abs(norm), 2);
+
+        const scale = Math.max(1.08 - absNorm * 0.16 * factor, 0.76);
+        const rotateY = Math.max(-32, Math.min(32, -norm * 30 * factor));
+        const translateZ = -absNorm * 110 * factor;
+        const opacity = Math.max(1 - absNorm * 0.35, 0.42);
+
+        card.style.transform = `translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+        card.style.opacity = opacity;
+        card.style.zIndex = Math.round(100 - absNorm * 30);
       });
+
       cards.forEach((c, i) => c.classList.toggle('is-active', i === bestIdx));
       dots.forEach((d, i) => d.classList.toggle('is-active', i === bestIdx));
-      return bestIdx;
     }
 
-    track.addEventListener('scroll', () => {
-      clearTimeout(updateActive._t);
-      updateActive._t = setTimeout(updateActive, 60);
-    }, { passive: true });
+    function schedule() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(applyCoverflow);
+    }
+
+    track.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
 
     prev && prev.addEventListener('click', () => {
-      const i = updateActive();
-      scrollToCard(Math.max(0, i - 1));
+      const i = cards.findIndex(c => c.classList.contains('is-active'));
+      scrollToCard(Math.max(0, (i < 0 ? 0 : i) - 1));
     });
     next && next.addEventListener('click', () => {
-      const i = updateActive();
-      scrollToCard(Math.min(cards.length - 1, i + 1));
+      const i = cards.findIndex(c => c.classList.contains('is-active'));
+      scrollToCard(Math.min(cards.length - 1, (i < 0 ? 0 : i) + 1));
     });
 
-    // initial: center on second card if present, else first
     requestAnimationFrame(() => {
       scrollToCard(cards.length > 1 ? 1 : 0);
-      setTimeout(updateActive, 400);
+      setTimeout(applyCoverflow, 50);
+      setTimeout(applyCoverflow, 450);
     });
   });
 })();
