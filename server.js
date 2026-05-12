@@ -501,9 +501,13 @@ process.on('unhandledRejection', e => console.error('[unhandledRejection]', e));
 /* ==========================================================================
    Start
    ========================================================================== */
-app.listen(PORT, () => {
+// Явная привязка к 0.0.0.0 нужна для PaaS-окружений (Timeweb Cloud Apps,
+// Railway, etc.) — их сетевой пробник по умолчанию ходит по IPv4, а Node
+// без указания хоста может биндиться на IPv6 (::), что в контейнере
+// не пробрасывается.
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ▶ Кейс-Чемпионат 2026`);
-  console.log(`  ▶ http://localhost:${PORT}`);
+  console.log(`  ▶ http://0.0.0.0:${PORT}`);
   console.log(`  ▶ Лимит файла: ${MAX_FILE_MB} МБ`);
   console.log(`  ▶ Public:     ${PUBLIC_DIR}`);
   console.log(`  ▶ БД:         ${DB_FILE}`);
