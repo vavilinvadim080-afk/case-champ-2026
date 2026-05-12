@@ -1345,7 +1345,7 @@ body { background: var(--bg-deep-blue); }
 }
 .about-photo {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   border-radius: 28px;
   overflow: hidden;
   background: linear-gradient(135deg, var(--violet-pill) 0%, var(--pink-burst) 100%);
@@ -1873,11 +1873,7 @@ body { background: var(--bg-deep-blue); }
 
     <div class="about-grid">
       <div class="about-photo reveal">
-        <!-- TODO: подставить реальное фото команды/мероприятия. Замени блок ниже на <img src="..." alt="..."/> -->
-        <div class="about-photo__placeholder">
-          <b>фото команды</b>
-          <span>сюда подставим снимок с открытия / командного фото</span>
-        </div>
+        <img src="/about-team.jpg" alt="Студенты обсуждают кейс на встрече" loading="lazy" />
       </div>
       <div class="about-text reveal">
         <p>Кейс-чемпионат ИТ-кластера «Газпром нефть» — это возможность решить реальную бизнес-задачу на стыке AI, HR и цифровых продуктов. Участникам предстоит создать концепцию корпоративной экосистемы на базе AI-агентов для T&amp;D — обучения и развития сотрудников.</p>
@@ -2002,8 +1998,7 @@ body { background: var(--bg-deep-blue); }
       <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>призы и возможности</div>
     </div>
 
-    <!-- Призы. Победителям подтверждено заказчиком: колонки Алиса + фаст-трек в летнюю школу.
-         Состав 2 и 3 места ждём от Стаса — пока заглушки. -->
+    <!-- Призы согласованы со Стасом и заказчицей -->
     <div class="carousel" data-carousel>
       <div class="carousel__track" id="prizeTrack">
         <article class="carousel__card" data-prize="prize">
@@ -2011,7 +2006,8 @@ body { background: var(--bg-deep-blue); }
           <ul class="carousel__list">
             <li>Персональные дипломы призёров (2-3 место)</li>
             <li>Обратная связь по решению команды от экспертов</li>
-            <li>Состав призов уточняется</li>
+            <li><b>2 место:</b> карьерные консультации от HR ИТ-кластера</li>
+            <li><b>3 место:</b> персональные разборы резюме от HR компании</li>
           </ul>
         </article>
 
@@ -2175,6 +2171,7 @@ body { background: var(--bg-deep-blue); }
       </div>
       <div class="footer__col">
         <h4>Контакты</h4>
+        <a href="mailto:hsecc.spb@gmail.com">hsecc.spb@gmail.com</a>
         <!-- TODO: подставить актуальные URL групп от заказчика -->
         <a href="#" target="_blank" rel="noopener">Telegram-группа</a>
         <a href="#" target="_blank" rel="noopener">ВКонтакте</a>
