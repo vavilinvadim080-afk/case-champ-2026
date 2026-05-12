@@ -44,6 +44,7 @@ const DB_FILE          = path.join(DATA_DIR, 'app.db');
 const PUBLIC_DIR       = path.join(__dirname, 'public');
 const MAX_FILE_MB      = parseInt(process.env.MAX_FILE_MB || '25', 10);
 const MAX_FILE_BYTES   = MAX_FILE_MB * 1024 * 1024;
+const KEEP_REVISIONS   = parseInt(process.env.KEEP_REVISIONS || '5', 10);
 const SESSION_TTL_MS   = 30 * 24 * 60 * 60 * 1000; // 30 дней
 const SCRYPT_N         = 16384; // дефолт scrypt — баланс безопасность/CPU
 
@@ -410,6 +411,22 @@ app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
     INSERT INTO submissions (team, user_email, title, notes, file_name, file_path, file_size, status, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, 'Принято', ?)
   `).run(team, req.userEmail, title, notes, req.file.originalname, safePath, req.file.size, Date.now());
+
+  // Хранить только последние KEEP_REVISIONS ревизий команды.
+  // Старше — удаляем и файл с диска, и запись из БД.
+  // LIMIT -1 OFFSET N в SQLite = «все строки, кроме первых N».
+  const stale = db.prepare(`
+    SELECT id, file_path FROM submissions
+    WHERE team = ?
+    ORDER BY created_at DESC
+    LIMIT -1 OFFSET ?
+  `).all(team, KEEP_REVISIONS);
+
+  for (const s of stale) {
+    const oldFile = path.join(UPLOADS_DIR, path.basename(s.file_path));
+    try { fs.unlinkSync(oldFile); } catch {}
+    db.prepare('DELETE FROM submissions WHERE id = ?').run(s.id);
+  }
 
   const row = db.prepare(`
     SELECT id, team, user_email, title, notes, file_name, file_size, status, created_at
