@@ -1654,22 +1654,34 @@ body { background: var(--bg-deep-blue); }
 }
 
 /* =========================================================================
-   v3 · GPN logo + mobile nav fix + case-card contrast
+   v3 · text logo + partner badge + mobile nav fix + case-card contrast
    ========================================================================= */
-/* Логотип-картинка (заменяет старый text-mark) */
-.logo--gpn { display: inline-flex; align-items: center; gap: 0; }
-.logo--gpn .logo__img {
-  height: 30px;
-  width: auto;
-  display: block;
-  filter: brightness(0) invert(1);  /* делает синий лого белым на тёмной шапке */
+/* Текстовый логотип в шапке */
+.logo--text { display: inline-flex; align-items: center; gap: 10px; }
+.logo__name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  white-space: nowrap;
 }
-/* На светлом футере оставляем оригинальный синий цвет логотипа */
-.footer .logo--gpn .logo__img { filter: none; }
+.logo__sub {
+  color: var(--fg-muted);
+  font-weight: 500;
+}
 
-/* Mobile nav: сжимаем лого, прячем «Личный кабинет», компактим «Участвовать» */
+/* Плашка партнёра в футере */
+.footer__partner {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  line-height: 1.4;
+  letter-spacing: .01em;
+}
+
+/* Mobile nav: прячем «Личный кабинет», компактим «Участвовать» */
 @media (max-width: 720px) {
-  .logo--gpn .logo__img { height: 22px; }
+  .logo__name { font-size: 14px; }
   #loginBtn { display: none; }
   .nav__actions .btn--primary { padding: 0 14px; height: 38px; font-size: 13px; }
 }
@@ -1798,8 +1810,9 @@ body { background: var(--bg-deep-blue); }
      ======================================================================== -->
 <header class="nav" id="nav">
   <div class="nav__inner">
-    <a href="#" class="logo logo--gpn" aria-label="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC">
-      <img src="/gpn-energy.svg" alt="Газпром нефть · ENERGY" class="logo__img" />
+    <a href="#" class="logo logo--text" aria-label="Кейс-чемпионат × HSCC">
+      <span class="logo__mark">K</span>
+      <span class="logo__name">Кейс-чемпионат <span class="logo__sub">× HSCC</span></span>
     </a>
     <nav class="nav__menu" id="navMenu">
       <a href="#about">О чемпионате</a>
@@ -1854,11 +1867,11 @@ body { background: var(--bg-deep-blue); }
 <div class="marquee marquee--bright" aria-hidden="true">
   <div class="marquee__track" id="marquee">
     <span class="marquee__item">регистрация до 21 мая</span>
-    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
+    <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
     <span class="marquee__item">регистрация до 21 мая</span>
-    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
+    <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
     <span class="marquee__item">регистрация до 21 мая</span>
-    <span class="marquee__item">финал в санкт-петербурге 5 июня</span>
+    <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
   </div>
 </div>
 
@@ -2151,8 +2164,8 @@ body { background: var(--bg-deep-blue); }
   <div class="container">
     <div class="footer__grid">
       <div class="footer__col footer__about">
-        <div class="logo logo--gpn" style="margin-bottom:14px">
-          <img src="/gpn-energy.svg" alt="Газпром нефть · ENERGY" class="logo__img" />
+        <div class="footer__partner" style="margin-bottom:14px">
+          «Газпром нефть» — генеральный партнёр Кейс-чемпионата
         </div>
         <div>Кейс-чемпионат ИТ-кластера Газпром нефти × HSCC. Реальная задача на стыке AI, HR и цифровых продуктов: создай корпоративную экосистему AI-агентов для T&amp;D.</div>
       </div>
