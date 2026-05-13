@@ -197,9 +197,7 @@ app.use(helmet({
       objectSrc:     ["'none'"],
       baseUri:       ["'self'"],
       formAction:    ["'self'"],
-      // null = директива не добавляется. Нужно отключить пока сайт работает по HTTP
-      // (без SSL). Когда привяжем домен и поставим Let's Encrypt — вернуть в [].
-      upgradeInsecureRequests: null,
+      upgradeInsecureRequests: [],
     }
   },
   crossOriginResourcePolicy: { policy: "same-origin" },
