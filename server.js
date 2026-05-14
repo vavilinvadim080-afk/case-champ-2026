@@ -48,6 +48,18 @@ const KEEP_REVISIONS   = parseInt(process.env.KEEP_REVISIONS || '5', 10);
 const SESSION_TTL_MS   = 30 * 24 * 60 * 60 * 1000; // 30 дней
 const SCRYPT_N         = 16384; // дефолт scrypt — баланс безопасность/CPU
 
+/* Список email-ов с админ-доступом к /api/admin/* и /admin.html.
+   Задаётся через env: ADMIN_EMAILS=anna@example.com,curator@hscc.ru */
+const ADMIN_EMAILS = new Set(
+  (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+);
+function isAdminEmail(email) {
+  return !!email && ADMIN_EMAILS.has(email.toLowerCase());
+}
+
 /* ==========================================================================
    Bootstrap: каталоги и БД
    ========================================================================== */
@@ -271,6 +283,14 @@ function auth(req, res, next) {
   next();
 }
 
+function adminAuth(req, res, next) {
+  auth(req, res, () => {
+    if (!isAdminEmail(req.userEmail))
+      return res.status(403).json({ error: 'Доступ запрещён' });
+    next();
+  });
+}
+
 /* ---- Регистрация ---- */
 app.post('/api/register', registerLimiter, async (req, res, next) => {
   try {
@@ -363,7 +383,11 @@ app.get('/api/me', auth, (req, res) => {
     count = db.prepare('SELECT COUNT(*) AS c FROM submissions WHERE team = ?').get(u.team).c;
   }
 
-  res.json({ user: u, team: { name: u.team, latest, totalSubmissions: count } });
+  res.json({
+    user: u,
+    team: { name: u.team, latest, totalSubmissions: count },
+    isAdmin: isAdminEmail(u.email),
+  });
 });
 
 /* ---- Обновить команду ---- */
@@ -474,6 +498,147 @@ app.get('/api/submission/:id/download', auth, (req, res) => {
   if (!fs.existsSync(filePath)) return res.status(410).json({ error: 'Файл удалён с диска' });
 
   res.download(filePath, sub.file_name);
+});
+
+/* ==========================================================================
+   Admin API — доступно email-ам из ADMIN_EMAILS
+   ========================================================================== */
+
+function csvEscape(v) {
+  if (v === null || v === undefined) return '';
+  const s = String(v);
+  if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+function rowsToCsv(headers, rows) {
+  const lines = [headers.map(csvEscape).join(',')];
+  for (const r of rows) lines.push(r.map(csvEscape).join(','));
+  // BOM для корректного открытия в Excel под Windows
+  return '﻿' + lines.join('\r\n');
+}
+function isoMs(ms) {
+  if (!ms) return '';
+  return new Date(ms).toISOString();
+}
+
+/* Сводные счётчики */
+app.get('/api/admin/stats', adminAuth, (_req, res) => {
+  const usersCount       = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
+  const teamsCount       = db.prepare("SELECT COUNT(DISTINCT team) AS c FROM users WHERE team IS NOT NULL AND team <> ''").get().c;
+  const submissionsCount = db.prepare('SELECT COUNT(*) AS c FROM submissions').get().c;
+  const teamsWithSubs    = db.prepare('SELECT COUNT(DISTINCT team) AS c FROM submissions').get().c;
+  res.json({ usersCount, teamsCount, submissionsCount, teamsWithSubs });
+});
+
+/* Все юзеры */
+app.get('/api/admin/users', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT email, name, university, team, created_at
+    FROM users ORDER BY created_at DESC
+  `).all();
+  res.json({ users: rows });
+});
+
+/* Команды с агрегацией: сколько участников, последняя загрузка */
+app.get('/api/admin/teams', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT
+      u.team AS team,
+      COUNT(*) AS members,
+      MAX(u.created_at) AS last_register,
+      (SELECT COUNT(*) FROM submissions s WHERE s.team = u.team) AS submissions_count,
+      (SELECT MAX(created_at) FROM submissions s WHERE s.team = u.team) AS last_submission
+    FROM users u
+    WHERE u.team IS NOT NULL AND u.team <> ''
+    GROUP BY u.team
+    ORDER BY last_register DESC
+  `).all();
+  res.json({ teams: rows });
+});
+
+/* Все отправки (с email и именем автора) */
+app.get('/api/admin/submissions', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT
+      s.id, s.team, s.user_email, u.name AS user_name,
+      s.title, s.notes, s.file_name, s.file_size, s.status, s.created_at
+    FROM submissions s
+    LEFT JOIN users u ON u.email = s.user_email
+    ORDER BY s.created_at DESC
+  `).all();
+  res.json({ submissions: rows });
+});
+
+/* Скачивание PDF админом — без ограничения по команде */
+app.get('/api/admin/submission/:id/download', adminAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id) || id < 1) return res.status(400).json({ error: 'bad id' });
+  const sub = db.prepare('SELECT * FROM submissions WHERE id = ?').get(id);
+  if (!sub) return res.status(404).json({ error: 'Решение не найдено' });
+
+  const fileBase = path.basename(sub.file_path);
+  if (fileBase !== sub.file_path) return res.status(400).json({ error: 'invalid path' });
+  const filePath = path.join(UPLOADS_DIR, fileBase);
+  if (!filePath.startsWith(UPLOADS_DIR + path.sep))
+    return res.status(400).json({ error: 'invalid path' });
+  if (!fs.existsSync(filePath)) return res.status(410).json({ error: 'Файл удалён с диска' });
+
+  res.download(filePath, sub.file_name);
+});
+
+/* CSV-экспорты */
+app.get('/api/admin/export/users.csv', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT email, name, university, team, created_at
+    FROM users ORDER BY created_at DESC
+  `).all();
+  const csv = rowsToCsv(
+    ['email', 'name', 'university', 'team', 'registered_at'],
+    rows.map(r => [r.email, r.name, r.university, r.team, isoMs(r.created_at)])
+  );
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
+  res.send(csv);
+});
+
+app.get('/api/admin/export/teams.csv', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT
+      u.team AS team,
+      COUNT(*) AS members,
+      MAX(u.created_at) AS last_register,
+      (SELECT COUNT(*) FROM submissions s WHERE s.team = u.team) AS submissions_count,
+      (SELECT MAX(created_at) FROM submissions s WHERE s.team = u.team) AS last_submission
+    FROM users u
+    WHERE u.team IS NOT NULL AND u.team <> ''
+    GROUP BY u.team
+    ORDER BY last_register DESC
+  `).all();
+  const csv = rowsToCsv(
+    ['team', 'members', 'last_register', 'submissions_count', 'last_submission'],
+    rows.map(r => [r.team, r.members, isoMs(r.last_register), r.submissions_count, isoMs(r.last_submission)])
+  );
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="teams.csv"');
+  res.send(csv);
+});
+
+app.get('/api/admin/export/submissions.csv', adminAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT
+      s.id, s.team, s.user_email, u.name AS user_name,
+      s.title, s.notes, s.file_name, s.file_size, s.status, s.created_at
+    FROM submissions s
+    LEFT JOIN users u ON u.email = s.user_email
+    ORDER BY s.created_at DESC
+  `).all();
+  const csv = rowsToCsv(
+    ['id', 'team', 'user_email', 'user_name', 'title', 'notes', 'file_name', 'file_size', 'status', 'submitted_at'],
+    rows.map(r => [r.id, r.team, r.user_email, r.user_name, r.title, r.notes, r.file_name, r.file_size, r.status, isoMs(r.created_at)])
+  );
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="submissions.csv"');
+  res.send(csv);
 });
 
 /* ---- Health ---- */

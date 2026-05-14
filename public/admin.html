@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Админка — Кейс-Чемпионат 2026</title>
+<style>
+  :root {
+    --bg: #08081a;
+    --bg-2: #0e0e26;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.18);
+    --fg: #f2f3f7;
+    --fg-muted: #a5a8b8;
+    --fg-dim: #6b6e80;
+    --accent: #7b61ff;
+    --accent-2: #22d3ee;
+    --accent-3: #ff5cb1;
+    --danger: #ff6b7a;
+    --ok: #2ecc71;
+    --grad: linear-gradient(135deg, #7b61ff 0%, #22d3ee 100%);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  a { color: var(--accent-2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input { font: inherit; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+  }
+  header.top h1 { font-size: 22px; margin: 0; }
+  header.top .me { color: var(--fg-muted); font-size: 14px; }
+  header.top .me strong { color: var(--fg); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 16px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--fg);
+    transition: background .15s, border-color .15s, transform .1s;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--surface-2); border-color: var(--accent-2); text-decoration: none; }
+  .btn:active { transform: translateY(1px); }
+  .btn--primary { background: var(--grad); border-color: transparent; color: #fff; }
+  .btn--primary:hover { filter: brightness(1.1); border-color: transparent; }
+  .btn--danger { color: var(--danger); border-color: rgba(255,107,122,.4); }
+  .btn--sm { padding: 6px 12px; font-size: 13px; }
+
+  /* login */
+  .login-card {
+    max-width: 380px; margin: 80px auto 0;
+    padding: 28px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .login-card h2 { margin: 0 0 8px; font-size: 20px; }
+  .login-card p { color: var(--fg-muted); font-size: 14px; margin: 0 0 20px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13px; color: var(--fg-muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    outline: none;
+  }
+  .field input:focus { border-color: var(--accent-2); }
+  .msg { font-size: 13px; margin-top: 12px; }
+  .msg--err { color: var(--danger); }
+  .msg--ok { color: var(--ok); }
+
+  /* stats */
+  .stats {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    margin-bottom: 22px;
+  }
+  .stat {
+    padding: 18px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .stat .v { font-size: 28px; font-weight: 700; }
+  .stat .k { font-size: 13px; color: var(--fg-muted); margin-top: 4px; }
+
+  /* exports */
+  .exports {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  /* tables */
+  .section { margin-bottom: 32px; }
+  .section h2 {
+    font-size: 16px; margin: 0 0 12px;
+    color: var(--fg-muted); font-weight: 500;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .table-wrap {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: auto;
+    max-height: 60vh;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th {
+    position: sticky; top: 0;
+    background: var(--bg-2);
+    color: var(--fg-muted); font-weight: 500;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface); }
+  td.muted, td .muted { color: var(--fg-muted); }
+  td .nowrap { white-space: nowrap; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .empty {
+    padding: 28px;
+    text-align: center;
+    color: var(--fg-muted);
+    font-size: 14px;
+  }
+
+  .denied {
+    max-width: 480px; margin: 80px auto 0;
+    padding: 28px;
+    background: var(--bg-2);
+    border: 1px solid rgba(255,107,122,.3);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .denied h2 { margin: 0 0 8px; color: var(--danger); }
+  .denied p { color: var(--fg-muted); margin: 0 0 16px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Logged in -->
+    <div id="app" hidden>
+      <header class="top">
+        <h1>Админка — Кейс-Чемпионат 2026</h1>
+        <div class="me">
+          <span id="me-name">…</span>
+          <button class="btn btn--sm btn--danger" id="logout-btn" style="margin-left:12px">Выйти</button>
+        </div>
+      </header>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="exports">
+        <a class="btn btn--primary" href="/api/admin/export/users.csv" id="exp-users">Скачать users.csv</a>
+        <a class="btn btn--primary" href="/api/admin/export/teams.csv" id="exp-teams">Скачать teams.csv</a>
+        <a class="btn btn--primary" href="/api/admin/export/submissions.csv" id="exp-subs">Скачать submissions.csv</a>
+      </div>
+
+      <section class="section">
+        <h2>Команды</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Команда</th>
+                <th class="num">Участников</th>
+                <th class="num">Решений</th>
+                <th>Последнее решение</th>
+                <th>Первая регистрация</th>
+              </tr>
+            </thead>
+            <tbody id="teams-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Решения</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Команда</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Файл</th>
+                <th class="num">Размер</th>
+                <th>Загружено</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="subs-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Регистрации</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Имя</th>
+                <th>Вуз</th>
+                <th>Команда</th>
+                <th>Зарегистрирован</th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Login form -->
+    <div id="login" class="login-card" hidden>
+      <h2>Вход в админку</h2>
+      <p>Введи email и пароль аккаунта с админ-доступом. Если у тебя нет аккаунта — сначала зарегистрируйся на главной странице, потом скажи Вадиму выдать доступ.</p>
+      <form id="login-form" autocomplete="on">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Пароль</label>
+          <input id="password" name="password" type="password" required autocomplete="current-password" />
+        </div>
+        <button class="btn btn--primary" type="submit" style="width:100%; margin-top:6px">Войти</button>
+        <div class="msg msg--err" id="login-msg" hidden></div>
+      </form>
+    </div>
+
+    <!-- Access denied -->
+    <div id="denied" class="denied" hidden>
+      <h2>Нет доступа</h2>
+      <p>Этот аккаунт зарегистрирован, но не в списке админов. Напиши Вадиму с просьбой выдать админ-доступ на этот email.</p>
+      <button class="btn btn--sm" id="denied-logout">Выйти и войти под другим аккаунтом</button>
+    </div>
+  </div>
+
+<script>
+'use strict';
+const LS_TOKEN = 'cc26:token';
+const getToken = () => localStorage.getItem(LS_TOKEN);
+const setToken = t => t ? localStorage.setItem(LS_TOKEN, t) : localStorage.removeItem(LS_TOKEN);
+
+const $ = sel => document.querySelector(sel);
+
+function show(view) {
+  $('#app').hidden = view !== 'app';
+  $('#login').hidden = view !== 'login';
+  $('#denied').hidden = view !== 'denied';
+}
+
+async function api(path, opts = {}) {
+  const token = getToken();
+  const headers = { ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  const res = await fetch(path, { ...opts, headers });
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (!res.ok) {
+    const err = new Error((data && data.error) || ('HTTP ' + res.status));
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+function fmtDate(ms) {
+  if (!ms) return '<span class="muted">—</span>';
+  const d = new Date(ms);
+  const pad = n => String(n).padStart(2, '0');
+  return pad(d.getDate()) + '.' + pad(d.getMonth()+1) + '.' + d.getFullYear() +
+         ' <span class="muted">' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + '</span>';
+}
+function fmtSize(bytes) {
+  if (bytes == null) return '';
+  if (bytes < 1024) return bytes + ' Б';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' КБ';
+  return (bytes/1024/1024).toFixed(2) + ' МБ';
+}
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* Скачивание защищённых endpoint-ов: подмешиваем Authorization вручную через fetch+blob. */
+function bindAuthDownload(linkId, url, filename) {
+  $(linkId).addEventListener('click', async (ev) => {
+    ev.preventDefault();
+    try {
+      const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+      if (!res.ok) {
+        alert('Не удалось скачать: ' + res.status);
+        return;
+      }
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
+    } catch (e) {
+      alert('Ошибка скачивания: ' + e.message);
+    }
+  });
+}
+
+async function loadAll() {
+  const [stats, teams, subs, users] = await Promise.all([
+    api('/api/admin/stats'),
+    api('/api/admin/teams'),
+    api('/api/admin/submissions'),
+    api('/api/admin/users'),
+  ]);
+
+  $('#stats').innerHTML = `
+    <div class="stat"><div class="v">${stats.usersCount}</div><div class="k">пользователей</div></div>
+    <div class="stat"><div class="v">${stats.teamsCount}</div><div class="k">команд</div></div>
+    <div class="stat"><div class="v">${stats.submissionsCount}</div><div class="k">решений загружено</div></div>
+    <div class="stat"><div class="v">${stats.teamsWithSubs}</div><div class="k">команд с решением</div></div>
+  `;
+
+  const teamsBody = $('#teams-body');
+  if (!teams.teams.length) {
+    teamsBody.innerHTML = '<tr><td colspan="5" class="empty">Команд пока нет</td></tr>';
+  } else {
+    teamsBody.innerHTML = teams.teams.map(t => `
+      <tr>
+        <td>${esc(t.team)}</td>
+        <td class="num">${t.members}</td>
+        <td class="num">${t.submissions_count}</td>
+        <td class="nowrap">${fmtDate(t.last_submission)}</td>
+        <td class="nowrap">${fmtDate(t.last_register)}</td>
+      </tr>
+    `).join('');
+  }
+
+  const subsBody = $('#subs-body');
+  if (!subs.submissions.length) {
+    subsBody.innerHTML = '<tr><td colspan="8" class="empty">Решений пока нет</td></tr>';
+  } else {
+    subsBody.innerHTML = subs.submissions.map(s => `
+      <tr>
+        <td class="muted">${s.id}</td>
+        <td>${esc(s.team)}</td>
+        <td>${esc(s.title)}${s.notes ? '<div class="muted" style="font-size:12px;margin-top:4px">'+esc(s.notes)+'</div>' : ''}</td>
+        <td>${esc(s.user_name || '')}<div class="muted" style="font-size:12px">${esc(s.user_email)}</div></td>
+        <td class="muted" style="font-size:12px">${esc(s.file_name)}</td>
+        <td class="num">${fmtSize(s.file_size)}</td>
+        <td class="nowrap">${fmtDate(s.created_at)}</td>
+        <td><button class="btn btn--sm" data-download="${s.id}" data-name="${esc(s.file_name)}">Скачать</button></td>
+      </tr>
+    `).join('');
+    subsBody.querySelectorAll('button[data-download]').forEach(b => {
+      b.addEventListener('click', async () => {
+        const id = b.getAttribute('data-download');
+        const name = b.getAttribute('data-name');
+        const res = await fetch('/api/admin/submission/' + id + '/download', {
+          headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        if (!res.ok) { alert('Не удалось скачать: ' + res.status); return; }
+        const blob = await res.blob();
+        const u = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(u), 2000);
+      });
+    });
+  }
+
+  const usersBody = $('#users-body');
+  if (!users.users.length) {
+    usersBody.innerHTML = '<tr><td colspan="5" class="empty">Регистраций пока нет</td></tr>';
+  } else {
+    usersBody.innerHTML = users.users.map(u => `
+      <tr>
+        <td>${esc(u.email)}</td>
+        <td>${esc(u.name)}</td>
+        <td class="muted">${esc(u.university || '')}</td>
+        <td>${esc(u.team || '')}</td>
+        <td class="nowrap">${fmtDate(u.created_at)}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+async function boot() {
+  if (!getToken()) { show('login'); return; }
+  try {
+    const me = await api('/api/me');
+    if (!me.isAdmin) { show('denied'); return; }
+    $('#me-name').innerHTML = '<strong>' + esc(me.user.name) + '</strong> · ' + esc(me.user.email);
+    show('app');
+    await loadAll();
+  } catch (e) {
+    if (e.status === 401) { setToken(null); show('login'); return; }
+    alert('Ошибка загрузки: ' + e.message);
+  }
+}
+
+$('#login-form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const msg = $('#login-msg');
+  msg.hidden = true;
+  try {
+    const res = await api('/api/login', {
+      method: 'POST',
+      body: { email: $('#email').value.trim(), password: $('#password').value }
+    });
+    setToken(res.token);
+    await boot();
+  } catch (e) {
+    msg.textContent = e.message || 'Ошибка входа';
+    msg.hidden = false;
+  }
+});
+
+$('#logout-btn').addEventListener('click', async () => {
+  try { await api('/api/logout', { method: 'POST' }); } catch {}
+  setToken(null);
+  show('login');
+});
+
+$('#denied-logout').addEventListener('click', async () => {
+  try { await api('/api/logout', { method: 'POST' }); } catch {}
+  setToken(null);
+  show('login');
+});
+
+bindAuthDownload('#exp-users', '/api/admin/export/users.csv', 'users.csv');
+bindAuthDownload('#exp-teams', '/api/admin/export/teams.csv', 'teams.csv');
+bindAuthDownload('#exp-subs',  '/api/admin/export/submissions.csv', 'submissions.csv');
+
+boot();
+</script>
+</body>
+</html>
