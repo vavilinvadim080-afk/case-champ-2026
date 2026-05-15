@@ -2083,12 +2083,87 @@ body { background: var(--bg-deep-blue); }
   .hero__orbit--2 { width: 124%; }
 }
 
+/* =========================================================================
+   HERO CHIPS — плавающие стеклянные карточки по бокам главного экрана
+   ========================================================================= */
+.hero__chips {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.hero__chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 232px;
+  padding: 13px 16px;
+  border-radius: 16px;
+  background: rgba(10, 22, 48, .72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 18px 50px -18px rgba(0,10,30,.7), inset 0 1px 0 rgba(255,255,255,.06);
+  pointer-events: auto;
+  opacity: 0;
+  transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out), border-color .3s ease;
+  animation: chipFade 1s var(--ease-out) both, floatCard 7s ease-in-out infinite;
+}
+.hero__chip:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 26px 60px -18px rgba(0,69,150,.6), inset 0 1px 0 rgba(255,255,255,.10);
+  border-color: rgba(34,211,238,.4);
+}
+@keyframes chipFade {
+  from { opacity: 0; filter: blur(7px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+.hero__chip-ic {
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(0,69,150,.55), rgba(34,211,238,.4));
+  border: 1px solid rgba(34,211,238,.25);
+  color: #cdeefb;
+}
+.hero__chip-ic svg { width: 19px; height: 19px; }
+.hero__chip-title {
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 2px;
+}
+.hero__chip-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #fff;
+  line-height: 1.25;
+}
+
+/* позиции — попарно слева и справа, на разной высоте, со смещением фаз */
+.hero__chip--tl { top: 24%; left: clamp(8px, 3vw, 64px);  animation-delay: .9s,  -1s; }
+.hero__chip--bl { top: 60%; left: clamp(26px, 5vw, 116px); animation-delay: 1.15s, -4s; }
+.hero__chip--tr { top: 29%; right: clamp(8px, 3vw, 64px);  animation-delay: 1.0s,  -2.5s; }
+.hero__chip--br { top: 63%; right: clamp(26px, 5vw, 116px); animation-delay: 1.25s, -5.5s; }
+
+/* на узких экранах карточки наезжали бы на текст — убираем */
+@media (max-width: 1200px) {
+  .hero__chips { display: none; }
+}
+
 /* --- доступность: уважать настройку «меньше движения» --- */
 @media (prefers-reduced-motion: reduce) {
   .gradient-text { animation: none; }
   .btn--primary::before { display: none; }
   [data-tilt] { transform: none !important; }
   .blob, .orb, .hero__burst, .hero__burst-core, .hero__orbit, .hero__burst-stage { animation: none !important; }
+  .hero__chip { animation: none !important; opacity: 1; }
   .reveal { transition-delay: 0ms !important; }
 }
 </style>
@@ -2136,6 +2211,46 @@ body { background: var(--bg-deep-blue); }
     </div>
   </div>
   <div class="hero__vignette" aria-hidden="true"></div>
+
+  <div class="hero__chips">
+    <div class="hero__chip hero__chip--tl">
+      <span class="hero__chip-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+      </span>
+      <div>
+        <div class="hero__chip-title">кейс партнёра</div>
+        <div class="hero__chip-value">Газпром нефть · ИТ-кластер</div>
+      </div>
+    </div>
+    <div class="hero__chip hero__chip--bl">
+      <span class="hero__chip-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+      </span>
+      <div>
+        <div class="hero__chip-title">что создаём</div>
+        <div class="hero__chip-value">экосистему AI-агентов</div>
+      </div>
+    </div>
+    <div class="hero__chip hero__chip--tr">
+      <span class="hero__chip-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      </span>
+      <div>
+        <div class="hero__chip-title">формат</div>
+        <div class="hero__chip-value">онлайн-отбор + финал в СПб</div>
+      </div>
+    </div>
+    <div class="hero__chip hero__chip--br">
+      <span class="hero__chip-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 0 12 0V3H6v6Z"/><path d="M6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3M9 21h6M12 15v6"/></svg>
+      </span>
+      <div>
+        <div class="hero__chip-title">победителям</div>
+        <div class="hero__chip-value">фаст-трек в летнюю школу</div>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <div class="hero__inner">
       <h1 class="hero__title reveal">
