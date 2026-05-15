@@ -1247,9 +1247,21 @@ body { background: var(--bg-deep-blue); }
 }
 .hero--burst .container { position: relative; z-index: 2; }
 .hero--burst .hero__inner {
+  position: relative;
   max-width: 760px;
   margin: 0 auto;
   padding: 60px 12px;
+}
+/* Мягкая тёмная вуаль за текстом — поднимает контраст белого
+   текста поверх яркого оранжевого burst, не пряча сам burst */
+.hero--burst .hero__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0 -6%;
+  z-index: -1;
+  background: radial-gradient(ellipse 80% 68% at 50% 44%,
+    rgba(8,10,30,.82) 0%, rgba(8,10,30,.5) 52%, transparent 80%);
+  pointer-events: none;
 }
 .hero__meta--glass {
   display: inline-flex;
@@ -1284,6 +1296,7 @@ body { background: var(--bg-deep-blue); }
   .hero__meta--glass { gap: 18px; padding: 14px 18px; border-radius: 22px; }
   .hero__meta--glass > div { font-size: 12px; }
   .hero__meta--glass b { font-size: 15px; }
+  .hero__burst { width: 78vw; }
 }
 .hero--burst .hero__title {
   font-size: clamp(36px, 6.4vw, 84px);
