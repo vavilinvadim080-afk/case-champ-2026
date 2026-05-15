@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0b1233" />
+<meta name="theme-color" content="#001226" />
 <meta name="description" content="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 21 мая, финал — 5 июня в Санкт-Петербурге." />
 <title>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC — AI-агенты для T&D</title>
 
@@ -34,22 +34,26 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 input, textarea, select { font: inherit; }
 
 :root {
-  --bg: #08081a;
-  --bg-2: #0e0e26;
+  /* Фон — глубокий ГПН-синий (подтон фирменного #004596) вместо чёрного */
+  --bg: #001226;
+  --bg-2: #002247;
   --surface: rgba(255,255,255,0.04);
   --surface-2: rgba(255,255,255,0.07);
   --border: rgba(255,255,255,0.10);
   --border-strong: rgba(255,255,255,0.18);
   --fg: #f2f3f7;
-  --fg-muted: #a5a8b8;
-  --fg-dim: #6b6e80;
+  --fg-muted: #a5b3cc;
+  --fg-dim: #6b7894;
 
+  /* accent — фиолет HSCC (молодёжная ось, точечно)
+     accent-2 — циан-мост (общий для ГПН-голубого и неона)
+     accent-3 — фирменный синий Газпром нефти #004596 (корпоративная ось) */
   --accent: #7b61ff;
   --accent-2: #22d3ee;
-  --accent-3: #E65907;
-  --grad: linear-gradient(135deg, #7b61ff 0%, #22d3ee 100%);
-  --grad-alt: linear-gradient(135deg, #E65907 0%, #7b61ff 50%, #22d3ee 100%);
-  --grad-soft: linear-gradient(135deg, rgba(123,97,255,.25), rgba(34,211,238,.25));
+  --accent-3: #004596;
+  --grad: linear-gradient(135deg, #004596 0%, #22d3ee 100%);
+  --grad-alt: linear-gradient(135deg, #004596 0%, #7b61ff 50%, #22d3ee 100%);
+  --grad-soft: linear-gradient(135deg, rgba(0,69,150,.30), rgba(34,211,238,.25));
 
   --radius: 18px;
   --radius-lg: 28px;
@@ -71,10 +75,10 @@ input, textarea, select { font: inherit; }
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(1000px 600px at 90% -10%, rgba(123,97,255,.25), transparent 60%),
+    radial-gradient(1000px 600px at 90% -10%, rgba(123,97,255,.22), transparent 60%),
     radial-gradient(800px 500px at -10% 30%, rgba(34,211,238,.20), transparent 60%),
-    radial-gradient(700px 500px at 60% 110%, rgba(230,89,7,.18), transparent 60%),
-    linear-gradient(180deg, #08081a 0%, #0b0b22 100%);
+    radial-gradient(700px 500px at 60% 110%, rgba(0,69,150,.38), transparent 60%),
+    linear-gradient(180deg, #001226 0%, #00193a 100%);
 }
 .bg-grid {
   position: fixed;
@@ -97,7 +101,7 @@ input, textarea, select { font: inherit; }
 }
 .blob.a { width: 420px; height: 420px; background: #7b61ff; top: -80px; right: -60px; }
 .blob.b { width: 360px; height: 360px; background: #22d3ee; bottom: -100px; left: -120px; animation-delay: -6s; }
-.blob.c { width: 260px; height: 260px; background: #E65907; top: 40%; left: 50%; animation-delay: -12s; }
+.blob.c { width: 260px; height: 260px; background: #004596; top: 40%; left: 50%; animation-delay: -12s; }
 
 @keyframes floaty {
   0%,100% { transform: translate(0,0) scale(1); }
@@ -363,7 +367,7 @@ input, textarea, select { font: inherit; }
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
-    conic-gradient(from 180deg, #7b61ff, #22d3ee, #E65907, #7b61ff);
+    conic-gradient(from 180deg, #7b61ff, #22d3ee, #004596, #7b61ff);
   filter: blur(.5px);
   animation: orbRot 22s linear infinite;
   box-shadow: 0 40px 120px -20px rgba(123,97,255,.5), inset 0 0 80px rgba(0,0,0,.2);
@@ -613,7 +617,7 @@ input, textarea, select { font: inherit; }
   border-color: var(--border-strong);
   background: var(--surface-2);
 }
-.prize--gold { background: linear-gradient(160deg, rgba(255,196,102,.18), rgba(230,89,7,.08)); border-color: rgba(255,196,102,.35); }
+.prize--gold { background: linear-gradient(160deg, rgba(34,211,238,.16), rgba(0,69,150,.12)); border-color: rgba(34,211,238,.34); }
 .prize--silver { background: linear-gradient(160deg, rgba(34,211,238,.15), rgba(123,97,255,.08)); border-color: rgba(34,211,238,.35); }
 .prize__place {
   font-family: 'Space Grotesk', sans-serif;
@@ -625,7 +629,7 @@ input, textarea, select { font: inherit; }
 }
 .prize--gold .prize__place { background: linear-gradient(135deg, #ffd980, #ff9d5c); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .prize--silver .prize__place { background: linear-gradient(135deg, #9dd8ff, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.prize--bronze .prize__place { background: linear-gradient(135deg, #ff9d70, #E65907); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prize--bronze .prize__place { background: linear-gradient(135deg, #8be8f5, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .prize__amount { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px; margin-bottom: 10px; }
 .prize__list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
 .prize__list li { color: var(--fg-muted); font-size: 14px; display: flex; gap: 10px; }
@@ -724,7 +728,7 @@ input, textarea, select { font: inherit; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(500px 300px at 20% 20%, rgba(230,89,7,.25), transparent 60%),
+    radial-gradient(500px 300px at 20% 20%, rgba(0,69,150,.32), transparent 60%),
     radial-gradient(500px 300px at 80% 80%, rgba(34,211,238,.25), transparent 60%);
   pointer-events: none;
 }
@@ -1106,10 +1110,11 @@ input, textarea, select { font: inherit; }
   --bg-deep-blue-2: #131a45;
   --violet-pill: #6c4cff;
   --violet-pill-strong: #8a6bff;
-  --pink-burst: #E65907;
-  --pink-burst-2: #B8420A;
-  --pink-soft-1: #FFEEE3;
-  --pink-soft-2: #FFF1E6;
+  /* «burst» — перекрашен в фирменный синий ГПН (имена оставлены ради каскада) */
+  --pink-burst: #004596;
+  --pink-burst-2: #00316b;
+  --pink-soft-1: #EAF1FB;
+  --pink-soft-2: #F0F5FC;
   --light-fg: #1a1538;
   --light-fg-muted: #5a5380;
   --light-card-border: rgba(108,76,255,.12);
@@ -1232,8 +1237,8 @@ body { background: var(--bg-deep-blue); }
   width: min(540px, 84vw);
   aspect-ratio: 1 / 1;
   background:
-    radial-gradient(circle at 38% 32%, #FF9E5C 0%, #E65907 35%, #B8420A 72%, #6c4cff 100%);
-  filter: drop-shadow(0 40px 120px rgba(230,89,7,.45));
+    radial-gradient(circle at 38% 32%, #8be8f5 0%, #22d3ee 32%, #004596 70%, #7b61ff 100%);
+  filter: drop-shadow(0 40px 120px rgba(0,69,150,.5));
   clip-path: polygon(
     50% 0%, 56% 11%, 65% 2%, 66% 16%, 78% 8%, 75% 22%, 90% 18%, 82% 32%, 99% 32%, 86% 44%,
     100% 50%, 86% 56%, 99% 68%, 82% 68%, 90% 82%, 75% 78%, 78% 92%, 66% 84%, 65% 98%, 56% 89%,
@@ -1425,8 +1430,8 @@ body { background: var(--bg-deep-blue); }
   position: absolute;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle at 38% 32%, #FF9E5C 0%, var(--pink-burst) 50%, var(--pink-burst-2) 100%);
-  filter: drop-shadow(0 20px 50px rgba(230,89,7,.35));
+  background: radial-gradient(circle at 38% 32%, #8be8f5 0%, var(--pink-burst) 50%, var(--pink-burst-2) 100%);
+  filter: drop-shadow(0 20px 50px rgba(0,69,150,.45));
   clip-path: polygon(
     50% 0%, 58% 12%, 70% 4%, 68% 18%, 84% 14%, 78% 28%, 94% 26%, 84% 38%, 100% 42%, 86% 52%,
     100% 62%, 84% 66%, 92% 82%, 76% 78%, 80% 94%, 66% 84%, 64% 100%, 53% 88%, 44% 100%, 38% 86%,
@@ -1548,8 +1553,8 @@ body { background: var(--bg-deep-blue); }
   will-change: transform, opacity;
 }
 .carousel__card.is-active {
-  box-shadow: 0 32px 80px -20px rgba(230,89,7,.35);
-  border-color: rgba(230,89,7,.25);
+  box-shadow: 0 32px 80px -20px rgba(0,69,150,.45);
+  border-color: rgba(34,211,238,.30);
 }
 .carousel__card .prize__place,
 .carousel__card .prize__amount { display: none; } /* override legacy if shown */
@@ -1695,7 +1700,7 @@ body { background: var(--bg-deep-blue); }
 .section--light .case-card,
 .section--white .case-card {
   background:
-    linear-gradient(135deg, rgba(108,76,255,.18), rgba(230,89,7,.10)),
+    linear-gradient(135deg, rgba(108,76,255,.18), rgba(0,69,150,.16)),
     rgba(11,18,51,.96);
   padding: 48px;
 }
@@ -1803,6 +1808,170 @@ body { background: var(--bg-deep-blue); }
   .section--white .case-card .mini-stat span { font-size: 12.5px; }
   .section--light .case-card .mini-stat b,
   .section--white .case-card .mini-stat b { font-size: 13.5px; }
+}
+/* =========================================================================
+   PREMIUM LAYER — полировка и фишки (симбиоз: молодёжный драйв + ГПН-солидность)
+   Наслаивается поверх базовых стилей, каскадом переопределяет ключевые места.
+   ========================================================================= */
+
+/* --- расширенные токены --- */
+:root {
+  --gpn-blue: #004596;        /* фирменный синий Газпром нефти */
+  --gpn-cyan: #22d3ee;        /* голубой-мост: ГПН-голубой ≈ молодёжный неон */
+  --shadow-card: 0 1px 2px rgba(0,0,0,.30), 0 8px 24px -8px rgba(0,10,30,.55), 0 24px 64px -24px rgba(0,10,30,.65);
+  --shadow-card-hover: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -10px rgba(0,10,30,.6), 0 40px 100px -28px rgba(0,69,150,.45);
+  --ring: 0 0 0 1px var(--border-strong);
+  --ease-out: cubic-bezier(.22,.61,.36,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+/* --- gradient-text: оживлённый, с фирменным оранжевым --- */
+.gradient-text {
+  background: linear-gradient(110deg, var(--accent) 0%, var(--accent-2) 40%, var(--gpn-cyan) 75%, var(--accent) 100%);
+  background-size: 280% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradShift 9s ease-in-out infinite;
+}
+@keyframes gradShift {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+
+/* --- primary-кнопка: пробегающий блик --- */
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.45) 50%, transparent 80%);
+  transform: translateX(-120%);
+  transition: transform .7s var(--ease-out);
+}
+.btn--primary:hover::before { transform: translateX(120%); }
+.btn--lg { box-shadow: 0 14px 40px -12px rgba(123,97,255,.65), inset 0 1px 0 rgba(255,255,255,.25); }
+
+/* магнитные кнопки — плавный возврат */
+.btn[data-magnetic] { transition: transform .25s var(--ease-spring), box-shadow .2s ease; }
+
+/* --- spotlight: свечение за курсором на интерактивных карточках --- */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s ease;
+  background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%),
+              rgba(123,97,255,.20), rgba(34,211,238,.10) 35%, transparent 60%);
+}
+[data-spotlight]:hover::after { opacity: 1; }
+
+/* --- tilt: лёгкий 3D-отклик --- */
+[data-tilt] {
+  transform-style: preserve-3d;
+  transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
+  will-change: transform;
+}
+.tilt-scene { perspective: 1100px; }
+
+/* --- премиум-карточки: глубокие тени + фирменная оранжевая нить --- */
+.case-card,
+.stage-card,
+.carousel__card {
+  box-shadow: var(--shadow-card);
+  transition: box-shadow .35s var(--ease-out), transform .35s var(--ease-out), border-color .35s ease;
+}
+.case-card:hover,
+.stage-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-strong);
+}
+/* оранжевая акцент-полоса ГПН — появляется сверху карточки этапа */
+.stage-card { position: relative; overflow: hidden; }
+.stage-card::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gpn-cyan), var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s var(--ease-out);
+}
+.stage-card:hover::after { transform: scaleX(1); }
+
+/* номер этапа — крупный акцент */
+.stage-card__num {
+  background: linear-gradient(135deg, var(--gpn-cyan), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform .4s var(--ease-spring);
+}
+.stage-card:hover .stage-card__num { transform: scale(1.08) translateY(-2px); }
+
+/* --- eyebrow: тонкая огранка --- */
+.eyebrow {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: border-color .3s ease, color .3s ease;
+}
+
+/* --- счётчики: моноширинные цифры, чтобы не «прыгали» при анимации --- */
+.hero__meta--glass b,
+.mini-stat b { font-variant-numeric: tabular-nums; }
+
+/* --- hero: дополнительная аврора + акцентная линия под заголовком --- */
+.hero--burst::before {
+  content: "";
+  position: absolute;
+  inset: -10% -20% auto -20%;
+  height: 70%;
+  background: radial-gradient(60% 80% at 50% 0%, rgba(0,69,150,.32), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero--burst .hero__title::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin: 22px auto 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--gpn-cyan), var(--accent-2));
+  box-shadow: 0 0 24px rgba(34,211,238,.6);
+}
+
+/* --- stagger-reveal: каскадное появление дочерних элементов --- */
+.reveal { transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.reveal[style*="--i"] { transition-delay: calc(var(--i) * 90ms); }
+
+/* --- marquee: фирменный разделитель-ромб --- */
+.marquee--bright .marquee__item::after {
+  width: 7px; height: 7px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+/* --- доступность: уважать настройку «меньше движения» --- */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text { animation: none; }
+  .btn--primary::before { display: none; }
+  [data-tilt] { transform: none !important; }
+  .blob, .orb, .hero__burst { animation: none !important; }
+  .reveal { transition-delay: 0ms !important; }
 }
 </style>
 </head>
@@ -2860,6 +3029,76 @@ function updateNavAuth(user) {
       setToken(null);
     }
   }
+})();
+/* ==========================================================================
+   PREMIUM INTERACTIONS — магнитные кнопки, spotlight, 3D-tilt, параллакс
+   ========================================================================== */
+(function premiumFX() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (reduced || !fine) return; // тач-устройства и «меньше движения» — пропускаем
+
+  /* --- 1. Магнитные кнопки: лёгкое притяжение к курсору --- */
+  document.querySelectorAll('.btn--lg').forEach(btn => {
+    btn.setAttribute('data-magnetic', '');
+    const strength = 0.28;
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * strength;
+      const y = (e.clientY - r.top - r.height / 2) * strength;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+  });
+
+  /* --- 2. Spotlight: свечение следует за курсором по карточке --- */
+  document.querySelectorAll('.case-card, .stage-card, .carousel__card').forEach(card => {
+    card.setAttribute('data-spotlight', '');
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* --- 3. 3D-tilt: карточка кейса и фото команды слегка наклоняются --- */
+  document.querySelectorAll('.case-card, .about-photo').forEach(el => {
+    el.setAttribute('data-tilt', '');
+    if (el.parentElement) el.parentElement.classList.add('tilt-scene');
+    const max = 7; // градусов
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform =
+        `rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg) translateZ(0)`;
+    });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+  });
+
+  /* --- 4. Параллакс: вспышка за заголовком чуть смещается за курсором --- */
+  const burstWrap = document.querySelector('.hero__burst-wrap');
+  const hero = document.querySelector('.hero--burst');
+  if (burstWrap && hero) {
+    hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 26;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 18;
+      burstWrap.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    hero.addEventListener('pointerleave', () => { burstWrap.style.transform = ''; });
+  }
+})();
+
+/* ==========================================================================
+   Stagger-reveal — каскадная задержка для соседних .reveal внутри секций
+   ========================================================================== */
+(function staggerReveal() {
+  document.querySelectorAll('.stages-zigzag, .about-grid, .hero__inner, .case-card__side')
+    .forEach(group => {
+      group.querySelectorAll(':scope > .reveal, :scope > * > .reveal, :scope > .mini-stat')
+        .forEach((el, i) => el.style.setProperty('--i', i));
+    });
 })();
 </script>
 </body>
