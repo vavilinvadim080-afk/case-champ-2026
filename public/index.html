@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#001226" />
-<meta name="description" content="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 21 мая, финал — 5 июня в Санкт-Петербурге." />
+<meta name="description" content="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 23 мая, финал — 5 июня в Санкт-Петербурге." />
 <title>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC — AI-агенты для T&D</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1965,12 +1965,130 @@ body { background: var(--bg-deep-blue); }
   transform: rotate(45deg);
 }
 
+/* =========================================================================
+   HERO BURST 2.0 — переливание цвета, дыхание, орбиты, адаптивный размер
+   ========================================================================= */
+@property --burst-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* сцена — задаёт размер: крупно на десктопе, компактно на мобиле */
+.hero__burst-stage {
+  position: relative;
+  width: clamp(300px, 52vw, 720px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+
+/* звезда: форма-clip-path статична, цвет переливается по кругу */
+.hero__burst {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  background: conic-gradient(from var(--burst-angle),
+    #22d3ee, #7b61ff, #004596, #1b8fd6, #8be8f5, #22d3ee);
+  animation: burstFlow 14s linear infinite, burstBreath 9s ease-in-out infinite;
+}
+@keyframes burstFlow {
+  to { --burst-angle: 360deg; }
+}
+@keyframes burstBreath {
+  0%,100% {
+    transform: scale(1) rotate(-1.5deg);
+    filter: drop-shadow(0 36px 110px rgba(0,69,150,.45));
+  }
+  50% {
+    transform: scale(1.035) rotate(1.5deg);
+    filter: drop-shadow(0 48px 140px rgba(34,211,238,.5));
+  }
+}
+
+/* светящееся ядро — пульс энергии в центре звезды */
+.hero__burst-core {
+  position: absolute;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(139,232,245,.5) 35%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: coreGlow 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes coreGlow {
+  0%,100% { opacity: .55; transform: scale(.9); }
+  50%     { opacity: .95; transform: scale(1.08); }
+}
+
+/* орбитальные кольца — заполняют пустоту, медленно вращаются навстречу */
+.hero__orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(120,180,255,.16);
+  pointer-events: none;
+}
+.hero__orbit--1 {
+  width: 116%; aspect-ratio: 1;
+  animation: orbitSpin 34s linear infinite;
+}
+.hero__orbit--2 {
+  width: 138%; aspect-ratio: 1;
+  border-style: dashed;
+  border-color: rgba(34,211,238,.14);
+  animation: orbitSpin 52s linear infinite reverse;
+}
+.hero__orbit-dot {
+  position: absolute;
+  top: -4px; left: 50%;
+  width: 9px; height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 16px 2px rgba(34,211,238,.7);
+}
+.hero__orbit--2 .hero__orbit-dot {
+  background: var(--accent);
+  box-shadow: 0 0 16px 2px rgba(123,97,255,.7);
+}
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+/* появление при загрузке — вспышка «всплывает» мягко, с лёгким overshoot */
+.hero__burst-stage {
+  animation: burstEntrance 1.15s var(--ease-spring) both;
+}
+@keyframes burstEntrance {
+  0%   { opacity: 0; transform: scale(.6) rotate(-24deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+/* орбиты и ядро раскрываются следом за звездой */
+.hero__orbit,
+.hero__burst-core { animation-fill-mode: both; }
+.hero__orbit--1 { animation: orbitSpin 34s linear infinite, hzFade .7s ease .55s both; }
+.hero__orbit--2 { animation: orbitSpin 52s linear infinite reverse, hzFade .7s ease .7s both; }
+.hero__burst-core { animation: coreGlow 5.5s ease-in-out infinite, hzFade .8s ease .45s both; }
+@keyframes hzFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* адаптив: на мобиле вспышка компактнее и выше — текст не наезжает */
+@media (max-width: 760px) {
+  .hero__burst-stage { width: clamp(260px, 66vw, 420px); }
+}
+@media (max-width: 520px) {
+  .hero__burst-stage { width: clamp(220px, 62vw, 320px); }
+  .hero__orbit--1 { width: 110%; }
+  .hero__orbit--2 { width: 124%; }
+}
+
 /* --- доступность: уважать настройку «меньше движения» --- */
 @media (prefers-reduced-motion: reduce) {
   .gradient-text { animation: none; }
   .btn--primary::before { display: none; }
   [data-tilt] { transform: none !important; }
-  .blob, .orb, .hero__burst { animation: none !important; }
+  .blob, .orb, .hero__burst, .hero__burst-core, .hero__orbit, .hero__burst-stage { animation: none !important; }
   .reveal { transition-delay: 0ms !important; }
 }
 </style>
@@ -2010,7 +2128,12 @@ body { background: var(--bg-deep-blue); }
      ======================================================================== -->
 <section class="hero hero--burst">
   <div class="hero__burst-wrap" aria-hidden="true">
-    <div class="hero__burst"></div>
+    <div class="hero__burst-stage">
+      <div class="hero__orbit hero__orbit--1"><span class="hero__orbit-dot"></span></div>
+      <div class="hero__orbit hero__orbit--2"><span class="hero__orbit-dot"></span></div>
+      <div class="hero__burst"></div>
+      <div class="hero__burst-core"></div>
+    </div>
   </div>
   <div class="hero__vignette" aria-hidden="true"></div>
   <div class="container">
@@ -2029,7 +2152,7 @@ body { background: var(--bg-deep-blue); }
       <div class="hero__meta hero__meta--glass reveal">
         <div><b>4–5</b>человек в команде</div>
         <div><b>5 июня</b>финал в СПб</div>
-        <div><b>до 21 мая</b>регистрация</div>
+        <div><b>до 23 мая</b>регистрация</div>
       </div>
     </div>
   </div>
@@ -2040,11 +2163,11 @@ body { background: var(--bg-deep-blue); }
      ======================================================================== -->
 <div class="marquee marquee--bright" aria-hidden="true">
   <div class="marquee__track" id="marquee">
-    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">регистрация до 23 мая</span>
     <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
-    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">регистрация до 23 мая</span>
     <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
-    <span class="marquee__item">регистрация до 21 мая</span>
+    <span class="marquee__item">регистрация до 23 мая</span>
     <span class="marquee__item">финал в Санкт-Петербурге 5 июня</span>
   </div>
 </div>
@@ -2102,7 +2225,7 @@ body { background: var(--bg-deep-blue); }
           <div class="mini-stat"><span>Для кого</span><b>сотрудники</b></div>
           <div class="mini-stat"><span>Что важно</span><b>продукт + UX + AI</b></div>
           <div class="mini-stat"><span>Размер команды</span><b>4–5 человек</b></div>
-          <div class="mini-stat"><span>Срок отбора</span><b>22 → 29 мая</b></div>
+          <div class="mini-stat"><span>Срок отбора</span><b>24 → 31 мая</b></div>
           <div class="mini-stat"><span>Финал</span><b>5 июня · СПб</b></div>
         </aside>
       </div>
@@ -2127,9 +2250,9 @@ body { background: var(--bg-deep-blue); }
           <h3 class="stage-card__title">Регистрация</h3>
           <div class="stage-card__row">
             <span class="badge">онлайн</span>
-            <span class="stage-card__date">до 21 мая, 23:59</span>
+            <span class="stage-card__date">до 23 мая, 23:59</span>
           </div>
-          <p class="stage-card__text">Собирай команду из 4–5 человек и регистрируйся (каждый участник отдельно) в личном кабинете. После регистрации — доступ к чату чемпионата. Полный текст кейса придёт на почту 22 мая.</p>
+          <p class="stage-card__text">Собирай команду из 4–5 человек и регистрируйся (каждый участник отдельно) в личном кабинете. После регистрации — доступ к чату чемпионата. Полный текст кейса придёт на почту 24 мая.</p>
         </article>
       </div>
 
@@ -2140,10 +2263,10 @@ body { background: var(--bg-deep-blue); }
           <h3 class="stage-card__title">Отборочный этап</h3>
           <div class="stage-card__row">
             <span class="badge">онлайн</span>
-            <span class="stage-card__date">22 мая → 29 мая 12:00</span>
+            <span class="stage-card__date">24 мая 10:00 → 31 мая 12:00</span>
           </div>
           <p class="stage-card__text">Работа над концепцией экосистемы AI-агентов: пользовательские сценарии, архитектура, продуктовая логика, оценка эффекта. Один представитель от команды загружает решение в личном кабинете до дедлайна.</p>
-          <div class="stage-card__sub"><b>25 мая</b> — Q&amp;A-сессия с экспертами ИТ-кластера Газпром нефти: возможность задать вопросы по кейсу.</div>
+          <div class="stage-card__sub"><b>28 мая</b> — Q&amp;A-сессия с экспертами ИТ-кластера Газпром нефти: возможность задать вопросы по кейсу.</div>
         </article>
       </div>
 
@@ -2154,7 +2277,7 @@ body { background: var(--bg-deep-blue); }
           <h3 class="stage-card__title">Объявление финалистов</h3>
           <div class="stage-card__row">
             <span class="badge">онлайн</span>
-            <span class="stage-card__date">2 июня</span>
+            <span class="stage-card__date">3 июня</span>
           </div>
           <p class="stage-card__text">Эксперты оценивают решения по методологии. Лучшие команды получают приглашение на очный финал в Санкт-Петербурге.</p>
         </article>
@@ -2301,7 +2424,7 @@ body { background: var(--bg-deep-blue); }
           <span>Можно ли задавать вопросы по кейсу во время чемпионата?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Да. Для участников будет организован чат и Q&amp;A-сессии с экспертами. Ближайшая — 25 мая.</div>
+        <div class="faq__answer">Да. Для участников будет организован чат и Q&amp;A-сессии с экспертами. Ближайшая — 28 мая.</div>
       </details>
 
       <details class="faq__item reveal">
@@ -2321,8 +2444,8 @@ body { background: var(--bg-deep-blue); }
 <section class="section" id="register">
   <div class="container">
     <div class="cta reveal">
-      <h2>Регистрация до 21 мая, 23:59</h2>
-      <p>Создай личный кабинет участника. Полный текст кейса придёт на почту 22 мая, загрузка решения — до 29 мая 12:00.</p>
+      <h2>Регистрация до 23 мая, 23:59</h2>
+      <p>Создай личный кабинет участника. Полный текст кейса придёт на почту 24 мая, загрузка решения — до 31 мая 12:00.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn--primary btn--lg" type="button" onclick="openAuth('register')">Создать кабинет →</button>
         <button class="btn btn--ghost btn--lg" type="button" onclick="openAuth('login')">У меня уже есть аккаунт</button>
@@ -2478,7 +2601,7 @@ body { background: var(--bg-deep-blue); }
     </div>
 
     <div class="dash-grid" style="margin-top:20px">
-      <div class="dash-cell"><small>Приём решений до</small><b>29 мая, 12:00 МСК</b></div>
+      <div class="dash-cell"><small>Приём решений до</small><b>31 мая, 12:00 МСК</b></div>
       <div class="dash-cell"><small>Кейс</small><b>AI-агенты для T&amp;D</b></div>
       <div class="dash-cell"><small>Отправок в истории</small><b id="dashCount">0</b></div>
       <div class="dash-cell"><small>Лимит файла</small><b id="dashLimit">25 МБ · PDF</b></div>
