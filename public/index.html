@@ -46,9 +46,9 @@ input, textarea, select { font: inherit; }
 
   --accent: #7b61ff;
   --accent-2: #22d3ee;
-  --accent-3: #ff5cb1;
+  --accent-3: #E65907;
   --grad: linear-gradient(135deg, #7b61ff 0%, #22d3ee 100%);
-  --grad-alt: linear-gradient(135deg, #ff5cb1 0%, #7b61ff 50%, #22d3ee 100%);
+  --grad-alt: linear-gradient(135deg, #E65907 0%, #7b61ff 50%, #22d3ee 100%);
   --grad-soft: linear-gradient(135deg, rgba(123,97,255,.25), rgba(34,211,238,.25));
 
   --radius: 18px;
@@ -73,7 +73,7 @@ input, textarea, select { font: inherit; }
   background:
     radial-gradient(1000px 600px at 90% -10%, rgba(123,97,255,.25), transparent 60%),
     radial-gradient(800px 500px at -10% 30%, rgba(34,211,238,.20), transparent 60%),
-    radial-gradient(700px 500px at 60% 110%, rgba(255,92,177,.18), transparent 60%),
+    radial-gradient(700px 500px at 60% 110%, rgba(230,89,7,.18), transparent 60%),
     linear-gradient(180deg, #08081a 0%, #0b0b22 100%);
 }
 .bg-grid {
@@ -97,7 +97,7 @@ input, textarea, select { font: inherit; }
 }
 .blob.a { width: 420px; height: 420px; background: #7b61ff; top: -80px; right: -60px; }
 .blob.b { width: 360px; height: 360px; background: #22d3ee; bottom: -100px; left: -120px; animation-delay: -6s; }
-.blob.c { width: 260px; height: 260px; background: #ff5cb1; top: 40%; left: 50%; animation-delay: -12s; }
+.blob.c { width: 260px; height: 260px; background: #E65907; top: 40%; left: 50%; animation-delay: -12s; }
 
 @keyframes floaty {
   0%,100% { transform: translate(0,0) scale(1); }
@@ -363,7 +363,7 @@ input, textarea, select { font: inherit; }
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
-    conic-gradient(from 180deg, #7b61ff, #22d3ee, #ff5cb1, #7b61ff);
+    conic-gradient(from 180deg, #7b61ff, #22d3ee, #E65907, #7b61ff);
   filter: blur(.5px);
   animation: orbRot 22s linear infinite;
   box-shadow: 0 40px 120px -20px rgba(123,97,255,.5), inset 0 0 80px rgba(0,0,0,.2);
@@ -613,7 +613,7 @@ input, textarea, select { font: inherit; }
   border-color: var(--border-strong);
   background: var(--surface-2);
 }
-.prize--gold { background: linear-gradient(160deg, rgba(255,196,102,.18), rgba(255,92,177,.08)); border-color: rgba(255,196,102,.35); }
+.prize--gold { background: linear-gradient(160deg, rgba(255,196,102,.18), rgba(230,89,7,.08)); border-color: rgba(255,196,102,.35); }
 .prize--silver { background: linear-gradient(160deg, rgba(34,211,238,.15), rgba(123,97,255,.08)); border-color: rgba(34,211,238,.35); }
 .prize__place {
   font-family: 'Space Grotesk', sans-serif;
@@ -625,7 +625,7 @@ input, textarea, select { font: inherit; }
 }
 .prize--gold .prize__place { background: linear-gradient(135deg, #ffd980, #ff9d5c); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .prize--silver .prize__place { background: linear-gradient(135deg, #9dd8ff, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.prize--bronze .prize__place { background: linear-gradient(135deg, #ff9d70, #ff5cb1); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prize--bronze .prize__place { background: linear-gradient(135deg, #ff9d70, #E65907); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .prize__amount { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px; margin-bottom: 10px; }
 .prize__list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
 .prize__list li { color: var(--fg-muted); font-size: 14px; display: flex; gap: 10px; }
@@ -724,7 +724,7 @@ input, textarea, select { font: inherit; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(500px 300px at 20% 20%, rgba(255,92,177,.25), transparent 60%),
+    radial-gradient(500px 300px at 20% 20%, rgba(230,89,7,.25), transparent 60%),
     radial-gradient(500px 300px at 80% 80%, rgba(34,211,238,.25), transparent 60%);
   pointer-events: none;
 }
@@ -1106,10 +1106,10 @@ input, textarea, select { font: inherit; }
   --bg-deep-blue-2: #131a45;
   --violet-pill: #6c4cff;
   --violet-pill-strong: #8a6bff;
-  --pink-burst: #ff4d9e;
-  --pink-burst-2: #c83ee0;
-  --pink-soft-1: #ffe9f3;
-  --pink-soft-2: #f6e3ff;
+  --pink-burst: #E65907;
+  --pink-burst-2: #B8420A;
+  --pink-soft-1: #FFEEE3;
+  --pink-soft-2: #FFF1E6;
   --light-fg: #1a1538;
   --light-fg-muted: #5a5380;
   --light-card-border: rgba(108,76,255,.12);
@@ -1231,8 +1231,8 @@ body { background: var(--bg-deep-blue); }
   width: min(95vw, 1100px);
   aspect-ratio: 1 / 1;
   background:
-    radial-gradient(circle at 38% 32%, #ff86c6 0%, #ff4d9e 35%, #c83ee0 72%, #6c4cff 100%);
-  filter: drop-shadow(0 40px 120px rgba(255,77,158,.45));
+    radial-gradient(circle at 38% 32%, #FF9E5C 0%, #E65907 35%, #B8420A 72%, #6c4cff 100%);
+  filter: drop-shadow(0 40px 120px rgba(230,89,7,.45));
   clip-path: polygon(
     50% 0%, 56% 11%, 65% 2%, 66% 16%, 78% 8%, 75% 22%, 90% 18%, 82% 32%, 99% 32%, 86% 44%,
     100% 50%, 86% 56%, 99% 68%, 82% 68%, 90% 82%, 75% 78%, 78% 92%, 66% 84%, 65% 98%, 56% 89%,
@@ -1420,8 +1420,8 @@ body { background: var(--bg-deep-blue); }
   position: absolute;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle at 38% 32%, #ff86c6 0%, var(--pink-burst) 50%, var(--pink-burst-2) 100%);
-  filter: drop-shadow(0 20px 50px rgba(255,77,158,.35));
+  background: radial-gradient(circle at 38% 32%, #FF9E5C 0%, var(--pink-burst) 50%, var(--pink-burst-2) 100%);
+  filter: drop-shadow(0 20px 50px rgba(230,89,7,.35));
   clip-path: polygon(
     50% 0%, 58% 12%, 70% 4%, 68% 18%, 84% 14%, 78% 28%, 94% 26%, 84% 38%, 100% 42%, 86% 52%,
     100% 62%, 84% 66%, 92% 82%, 76% 78%, 80% 94%, 66% 84%, 64% 100%, 53% 88%, 44% 100%, 38% 86%,
@@ -1543,8 +1543,8 @@ body { background: var(--bg-deep-blue); }
   will-change: transform, opacity;
 }
 .carousel__card.is-active {
-  box-shadow: 0 32px 80px -20px rgba(255,77,158,.35);
-  border-color: rgba(255,77,158,.25);
+  box-shadow: 0 32px 80px -20px rgba(230,89,7,.35);
+  border-color: rgba(230,89,7,.25);
 }
 .carousel__card .prize__place,
 .carousel__card .prize__amount { display: none; } /* override legacy if shown */
@@ -1690,7 +1690,7 @@ body { background: var(--bg-deep-blue); }
 .section--light .case-card,
 .section--white .case-card {
   background:
-    linear-gradient(135deg, rgba(108,76,255,.18), rgba(255,77,158,.10)),
+    linear-gradient(135deg, rgba(108,76,255,.18), rgba(230,89,7,.10)),
     rgba(11,18,51,.96);
   padding: 48px;
 }
