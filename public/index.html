@@ -2896,6 +2896,9 @@ $('#registerForm').addEventListener('submit', async e => {
     closeModal('authModal');
     await openDash();
     toast('Кабинет создан. Удачи на чемпионате!', 'ok');
+    // Цель Яндекс.Метрики — успешная регистрация. typeof-проверка на случай,
+    // если счётчик не загрузился (блокировщик и т.п.) — регистрация важнее аналитики
+    if (typeof ym === 'function') ym(109258518, 'reachGoal', 'registration');
   } catch (e) {
     err.textContent = e.message; err.style.display = 'block';
   }
