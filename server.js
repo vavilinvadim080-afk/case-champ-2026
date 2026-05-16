@@ -201,10 +201,13 @@ app.use(helmet({
       defaultSrc:    ["'self'"],
       styleSrc:      ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc:       ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc:     ["'self'", "'unsafe-inline'"],
+      // mc.yandex.ru — загрузка tag.js Яндекс.Метрики (включая вебвизор)
+      scriptSrc:     ["'self'", "'unsafe-inline'", "https://mc.yandex.ru"],
       scriptSrcAttr: ["'unsafe-inline'"],
-      imgSrc:        ["'self'", "data:"],
-      connectSrc:    ["'self'"],
+      // mc.yandex.ru — пиксель <noscript> и ресурсы счётчика
+      imgSrc:        ["'self'", "data:", "https://mc.yandex.ru"],
+      // mc.yandex.ru / .com — отправка хитов и данных вебвизора
+      connectSrc:    ["'self'", "https://mc.yandex.ru", "https://mc.yandex.com"],
       frameAncestors:["'none'"],
       objectSrc:     ["'none'"],
       baseUri:       ["'self'"],
