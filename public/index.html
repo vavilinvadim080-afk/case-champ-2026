@@ -2898,6 +2898,21 @@ const LS_TOKEN = 'cc26:token';
 const getToken = () => localStorage.getItem(LS_TOKEN);
 const setToken = t => t ? localStorage.setItem(LS_TOKEN, t) : localStorage.removeItem(LS_TOKEN);
 
+/* UTM-метка для атрибуции регистраций амбассадорам.
+   Захватываем при первом заходе по ссылке вида ?utm_source=vadim_ittolk,
+   храним в sessionStorage пока вкладка открыта - человек может зарегаться
+   через 5 минут после клика по якорю, мы должны не потерять источник.
+   Каждый новый ?utm_source перезаписывает старый (last-click wins). */
+const SS_UTM = 'cc26:utm';
+const getUtm = () => sessionStorage.getItem(SS_UTM) || '';
+(function captureUtm() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const src = (params.get('utm_source') || '').trim().slice(0, 80);
+    if (src) sessionStorage.setItem(SS_UTM, src);
+  } catch (_) { /* старый браузер - просто молча игнорим */ }
+})();
+
 let currentUserCache = null;   // последний профиль из /api/me
 let config = { maxFileMB: 25 };
 
@@ -2998,6 +3013,7 @@ $('#registerForm').addEventListener('submit', async e => {
     university: $('#regUni').value.trim(),
     team:       $('#regTeam').value.trim(),
     password:   $('#regPass').value,
+    utm:        getUtm(),
   };
   try {
     const { token, user } = await api('/api/register', { method: 'POST', body });

@@ -105,6 +105,13 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_sess_exp ON sessions(expires_at);
 `);
 
+/* Миграция: добавляем колонку utm в users.
+   SQLite не умеет ADD COLUMN IF NOT EXISTS — заворачиваем в try/catch.
+   При первой загрузке колонка появится, при следующих — выбросит "duplicate
+   column name" и мы это проигнорируем. Хранит utm_source как есть. */
+try { db.exec('ALTER TABLE users ADD COLUMN utm TEXT'); }
+catch (e) { if (!/duplicate column/i.test(e.message)) throw e; }
+
 /* Простой housekeeping — раз в час чистим протухшие сессии */
 setInterval(() => {
   try { db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now()); }
@@ -297,11 +304,15 @@ function adminAuth(req, res, next) {
 /* ---- Регистрация ---- */
 app.post('/api/register', registerLimiter, async (req, res, next) => {
   try {
-    let { email, name, university, team, password } = req.body || {};
+    let { email, name, university, team, password, utm } = req.body || {};
     email = (email || '').trim().toLowerCase();
     name  = (name  || '').trim();
     university = (university || '').trim();
     team = (team || '').trim();
+    /* UTM-метка из фронта (sessionStorage). Обрезаем до 80 символов,
+       чистим от потенциального мусора — только латиница, цифры,
+       подчёркивание и дефис, остальное режем. */
+    utm  = (utm || '').trim().slice(0, 80).replace(/[^\w\-]/g, '');
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       return res.status(400).json({ error: 'Некорректный email' });
@@ -321,9 +332,9 @@ app.post('/api/register', registerLimiter, async (req, res, next) => {
 
     const { hash, salt } = await hashPassword(password);
     db.prepare(`
-      INSERT INTO users (email, name, university, team, pass_hash, pass_salt, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(email, name, university || null, team || null, hash, salt, Date.now());
+      INSERT INTO users (email, name, university, team, pass_hash, pass_salt, created_at, utm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(email, name, university || null, team || null, hash, salt, Date.now(), utm || null);
 
     const token = newToken();
     db.prepare('INSERT INTO sessions (token, user_email, created_at, expires_at) VALUES (?, ?, ?, ?)')
@@ -533,10 +544,10 @@ app.get('/api/admin/stats', adminAuth, (_req, res) => {
   res.json({ usersCount, teamsCount, submissionsCount, teamsWithSubs });
 });
 
-/* Все юзеры */
+/* Все юзеры (включая utm-метку, по которой пришли) */
 app.get('/api/admin/users', adminAuth, (_req, res) => {
   const rows = db.prepare(`
-    SELECT email, name, university, team, created_at
+    SELECT email, name, university, team, utm, created_at
     FROM users ORDER BY created_at DESC
   `).all();
   res.json({ users: rows });
@@ -592,12 +603,12 @@ app.get('/api/admin/submission/:id/download', adminAuth, (req, res) => {
 /* CSV-экспорты */
 app.get('/api/admin/export/users.csv', adminAuth, (_req, res) => {
   const rows = db.prepare(`
-    SELECT email, name, university, team, created_at
+    SELECT email, name, university, team, utm, created_at
     FROM users ORDER BY created_at DESC
   `).all();
   const csv = rowsToCsv(
-    ['email', 'name', 'university', 'team', 'registered_at'],
-    rows.map(r => [r.email, r.name, r.university, r.team, isoMs(r.created_at)])
+    ['email', 'name', 'university', 'team', 'utm', 'registered_at'],
+    rows.map(r => [r.email, r.name, r.university, r.team, r.utm, isoMs(r.created_at)])
   );
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
