@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#001226" />
-<meta name="description" content="Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 23 мая, финал — 5 июня в Санкт-Петербурге." />
-<title>Кейс-чемпионат ИТ-кластера «Газпром нефть» × HSCC — AI-агенты для T&D</title>
+<meta name="description" content="Кейс-чемпионат ИТ-кластера партнёра × HSCC. Создай корпоративную экосистему на базе AI-агентов для T&D. Регистрация до 23 мая, финал — 5 июня в Санкт-Петербурге." />
+<title>Кейс-чемпионат ИТ-кластера партнёра × HSCC — AI-агенты для T&D</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -741,6 +741,74 @@ input, textarea, select { font: inherit; }
   margin: 0 0 14px;
 }
 .cta p { color: var(--fg-muted); font-size: 17px; max-width: 580px; margin: 0 auto 28px; }
+
+/* =========================================================================
+   Chat-invite — блок «Беседы участников» (TG + VK)
+   Используется в двух местах:
+   - в секции регистрации над .cta — чтобы посетители видели чаты до того
+     как уйдут со страницы
+   - в дашборде через .chat-invite--dash — чтобы после регистрации/входа
+     ссылки сразу попадались на глаза
+   ========================================================================= */
+.chat-invite {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 24px 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.025);
+  margin-bottom: 32px;
+}
+.chat-invite__head { flex: 1; min-width: 220px; }
+.chat-invite__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  margin: 0 0 4px;
+}
+.chat-invite__sub {
+  color: var(--fg-muted);
+  font-size: 14px;
+  margin: 0;
+}
+.chat-invite__btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn--chat {
+  height: 46px;
+  padding: 0 20px;
+  font-size: 14px;
+  background: rgba(255,255,255,.04);
+  color: #fff;
+  border: 1px solid;
+}
+.btn--chat svg { width: 18px; height: 18px; flex-shrink: 0; }
+.btn--chat-tg { border-color: rgba(34,158,217,.55); }
+.btn--chat-tg:hover { background: rgba(34,158,217,.18); border-color: rgba(34,158,217,1); }
+.btn--chat-vk { border-color: rgba(7,113,184,.55); }
+.btn--chat-vk:hover { background: rgba(7,113,184,.2); border-color: rgba(7,113,184,1); }
+
+/* Компакт-вариант для модалки дашборда — меньше воздуха, меньше шрифт */
+.chat-invite--dash {
+  padding: 18px 20px;
+  margin: 16px 0 20px;
+  gap: 16px;
+}
+.chat-invite--dash .chat-invite__title { font-size: 16px; }
+.chat-invite--dash .chat-invite__sub { font-size: 13px; }
+.chat-invite--dash .btn--chat { height: 40px; padding: 0 16px; font-size: 13px; }
+
+@media (max-width: 640px) {
+  .chat-invite { flex-direction: column; align-items: stretch; text-align: center; }
+  .chat-invite__btns { justify-content: center; }
+  .chat-invite__btns .btn--chat { flex: 1; min-width: 0; }
+}
 
 /* =========================================================================
    Footer
@@ -2233,7 +2301,7 @@ body { background: var(--bg-deep-blue); }
       </span>
       <div>
         <div class="hero__chip-title">кейс партнёра</div>
-        <div class="hero__chip-value">Газпром нефть · ИТ-кластер</div>
+        <div class="hero__chip-value">Корпоративный партнёр · ИТ-кластер</div>
       </div>
     </div>
     <div class="hero__chip hero__chip--bl">
@@ -2269,7 +2337,7 @@ body { background: var(--bg-deep-blue); }
     <div class="hero__inner">
       <h1 class="hero__title reveal">
         <small>кейс-чемпионат</small>
-        ИТ-кластер<br>«Газпром нефть» × HSCC
+        ИТ-кластер партнёра<br>× HSCC
       </h1>
       <p class="hero__sub reveal">
         Создай корпоративную экосистему на базе AI-агентов для T&amp;D — обучения и развития сотрудников.
@@ -2315,7 +2383,7 @@ body { background: var(--bg-deep-blue); }
         <img src="/about-team.jpg" alt="Студенты обсуждают кейс на встрече" loading="lazy" />
       </div>
       <div class="about-text reveal">
-        <p>Кейс-чемпионат ИТ-кластера Газпром нефти — это возможность решить реальную бизнес-задачу на стыке AI, HR и цифровых продуктов. Участникам предстоит создать концепцию корпоративной экосистемы на базе AI-агентов для T&amp;D — обучения и развития сотрудников.</p>
+        <p>Кейс-чемпионат ИТ-кластера партнёра — это возможность решить реальную бизнес-задачу на стыке AI, HR и цифровых продуктов. Участникам предстоит создать концепцию корпоративной экосистемы на базе AI-агентов для T&amp;D — обучения и развития сотрудников.</p>
         <p>Это не учебный кейс, а задача, приближённая к реальным вызовам крупной технологической компании. Здесь важны не только технологии, но и продуктовое мышление, понимание пользовательского опыта и умение предлагать реалистичные решения.</p>
         <p>Это шанс не только проявить себя, но и предложить своё видение будущего корпоративного AI.</p>
         <div class="pill-tags">
@@ -2336,13 +2404,13 @@ body { background: var(--bg-deep-blue); }
     <div class="section-head reveal">
       <div class="eyebrow eyebrow--violet"><span class="eyebrow__dot"></span>кейс сезона 2026</div>
       <h2 class="section-title">AI-агенты для <span class="gradient-text">обучения и развития сотрудников</span></h2>
-      <p class="section-sub">Задача от ИТ-кластера Газпром нефти: спроектировать концепцию корпоративной экосистемы на базе AI-агентов, которая помогает сотрудникам учиться, расти и быстрее адаптироваться к новым задачам.</p>
+      <p class="section-sub">Задача от ИТ-кластера партнёра: спроектировать концепцию корпоративной экосистемы на базе AI-агентов, которая помогает сотрудникам учиться, расти и быстрее адаптироваться к новым задачам.</p>
     </div>
 
     <div class="case-card reveal">
       <div class="case-card__grid">
         <div>
-          <div class="case-card__tag">★ кейс партнёра · Газпром нефть · ИТ-кластер</div>
+          <div class="case-card__tag">★ кейс корпоративного партнёра · ИТ-кластер</div>
           <h3 class="case-card__title">Корпоративная T&amp;D-экосистема на базе AI-агентов</h3>
           <p class="case-card__desc">В крупной технологической компании сотни команд и тысячи сотрудников проходят программы обучения, меняют роли, прокачивают навыки. Цель — переосмыслить T&amp;D через AI-агентов: персональные траектории, рекомендация курсов, поддержка в обучении, оценка прогресса.</p>
 
@@ -2395,7 +2463,7 @@ body { background: var(--bg-deep-blue); }
             <span class="stage-card__date">24 мая 10:00 → 31 мая 12:00</span>
           </div>
           <p class="stage-card__text">Работа над концепцией экосистемы AI-агентов: пользовательские сценарии, архитектура, продуктовая логика, оценка эффекта. Один представитель от команды загружает решение в личном кабинете до дедлайна.</p>
-          <div class="stage-card__sub"><b>26 мая</b> — Q&amp;A-сессия с экспертами ИТ-кластера Газпром нефти: возможность задать вопросы по кейсу.</div>
+          <div class="stage-card__sub"><b>26 мая</b> — Q&amp;A-сессия с экспертами ИТ-кластера партнёра: возможность задать вопросы по кейсу.</div>
         </article>
       </div>
 
@@ -2421,7 +2489,7 @@ body { background: var(--bg-deep-blue); }
             <span class="badge badge--offline">очно · СПб</span>
             <span class="stage-card__date">5 июня</span>
           </div>
-          <p class="stage-card__text">Защита решений перед экспертами ИТ-кластера Газпром нефти в офисе компании в Санкт-Петербурге. Награждение, нетворкинг, обратная связь от индустрии.</p>
+          <p class="stage-card__text">Защита решений перед экспертами ИТ-кластера партнёра в офисе компании в Санкт-Петербурге. Награждение, нетворкинг, обратная связь от индустрии.</p>
         </article>
       </div>
     </div>
@@ -2456,7 +2524,7 @@ body { background: var(--bg-deep-blue); }
             <li>Персональные дипломы победителей</li>
             <li>Обратная связь по решению команды от экспертов</li>
             <li>Умные колонки «Алиса» каждому участнику команды</li>
-            <li>Фаст-трек на летнюю школу ИТ-кластера Газпром нефти</li>
+            <li>Фаст-трек на летнюю школу ИТ-кластера партнёра</li>
           </ul>
         </article>
 
@@ -2545,7 +2613,7 @@ body { background: var(--bg-deep-blue); }
           <span>Кто будет оценивать решения?</span>
           <span class="faq__icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
         </summary>
-        <div class="faq__answer">Эксперты ИТ-кластера Газпром нефти.</div>
+        <div class="faq__answer">Эксперты ИТ-кластера партнёра.</div>
       </details>
 
       <details class="faq__item reveal">
@@ -2572,6 +2640,26 @@ body { background: var(--bg-deep-blue); }
      ======================================================================== -->
 <section class="section" id="register">
   <div class="container">
+    <!-- Блок-приглашение в беседы участников. Над регистрацией намеренно:
+         посетитель видит куда идти за общением до того как либо сделает
+         кабинет, либо закроет страницу -->
+    <div class="chat-invite reveal">
+      <div class="chat-invite__head">
+        <div class="chat-invite__title">Беседы участников</div>
+        <p class="chat-invite__sub">Анонсы оргкомитета, ответы на вопросы и поиск команды</p>
+      </div>
+      <div class="chat-invite__btns">
+        <a class="btn btn--chat btn--chat-tg" href="https://t.me/+_PlFOF-idJEzZjhi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+          Вступить в Telegram
+        </a>
+        <a class="btn btn--chat btn--chat-vk" href="https://vk.me/join/AZQ1dxyN0R8rEp3/GGLcJclr" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.162 18.994c.486 0 .684-.337.678-.758-.024-1.592.604-2.447 1.74-1.312 1.254 1.296 1.51 1.972 3.05 1.972h2.737c.7 0 .932-.227.932-.617 0-.823-1.366-2.292-2.495-3.357-1.555-1.5-1.626-1.564.121-3.74 1.118-1.396 2.802-3.42 1.398-3.42h-3.155c-.578 0-.628.342-.834.78-.737 1.585-2.144 3.835-2.683 3.485-.563-.365-.305-1.785-.263-4.674.012-.61.013-1.04-.926-1.244C12.218 6.014 11.55 6 10.815 6c-1.527 0-2.575.054-3.114.273-.488.198-.694.71-.464.79.726.273 1.5.18 1.5 2.66 0 .593.073 1.31-.014 2.27-.058.629-.55.484-1.06-.292-1.27-1.927-2.198-4.07-2.5-4.78-.142-.323-.327-.554-.95-.554H1.7c-.518 0-.706.296-.706.625 0 .724.876 3.4 3.7 6.83 1.832 2.227 4.535 3.62 6.864 3.62.84.001 1.604-.107 1.604.51z"/></svg>
+          Вступить во ВКонтакте
+        </a>
+      </div>
+    </div>
+
     <div class="cta reveal">
       <h2>Регистрация до 23 мая, 23:59</h2>
       <p>Создай личный кабинет участника. Полный текст кейса придёт на почту 24 мая, загрузка решения — до 31 мая 12:00.</p>
@@ -2591,9 +2679,9 @@ body { background: var(--bg-deep-blue); }
     <div class="footer__grid">
       <div class="footer__col footer__about">
         <div class="footer__partner" style="margin-bottom:14px">
-          «Газпром нефть» — генеральный партнёр Кейс-чемпионата
+          Кейс-чемпионат проходит при поддержке корпоративного партнёра
         </div>
-        <div>Кейс-чемпионат ИТ-кластера Газпром нефти × HSCC. Реальная задача на стыке AI, HR и цифровых продуктов: создай корпоративную экосистему AI-агентов для T&amp;D.</div>
+        <div>Кейс-чемпионат ИТ-кластера партнёра × HSCC. Реальная задача на стыке AI, HR и цифровых продуктов: создай корпоративную экосистему AI-агентов для T&amp;D.</div>
       </div>
       <div class="footer__col">
         <h4>Чемпионат</h4>
@@ -2616,7 +2704,7 @@ body { background: var(--bg-deep-blue); }
       </div>
     </div>
     <div class="footer__bottom">
-      <div>© 2026 ИТ-кластер «Газпром нефть» × HSCC. Все права защищены.</div>
+      <div>© 2026 ИТ-кластер партнёра × HSCC. Все права защищены.</div>
       <div>Финал — 5 июня, Санкт-Петербург</div>
     </div>
   </div>
@@ -2697,6 +2785,28 @@ body { background: var(--bg-deep-blue); }
         <div class="dash-head__email" id="dashEmail">email</div>
       </div>
       <button class="btn btn--ghost" type="button" onclick="logout()">Выйти</button>
+    </div>
+
+    <!-- Беседы участников в кабинете: компакт-версия того же блока что в #register.
+         Показываем здесь чтобы после успешной регистрации (когда модалка
+         открывается через openDash) пользователь сразу видел куда идти
+         за общением. Возвращающиеся юзеры видят это же — на случай если
+         в прошлый раз не вступили -->
+    <div class="chat-invite chat-invite--dash">
+      <div class="chat-invite__head">
+        <div class="chat-invite__title">Беседы участников</div>
+        <p class="chat-invite__sub">Все новости и ответы организаторов будут здесь</p>
+      </div>
+      <div class="chat-invite__btns">
+        <a class="btn btn--chat btn--chat-tg" href="https://t.me/+_PlFOF-idJEzZjhi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+          Telegram
+        </a>
+        <a class="btn btn--chat btn--chat-vk" href="https://vk.me/join/AZQ1dxyN0R8rEp3/GGLcJclr" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.162 18.994c.486 0 .684-.337.678-.758-.024-1.592.604-2.447 1.74-1.312 1.254 1.296 1.51 1.972 3.05 1.972h2.737c.7 0 .932-.227.932-.617 0-.823-1.366-2.292-2.495-3.357-1.555-1.5-1.626-1.564.121-3.74 1.118-1.396 2.802-3.42 1.398-3.42h-3.155c-.578 0-.628.342-.834.78-.737 1.585-2.144 3.835-2.683 3.485-.563-.365-.305-1.785-.263-4.674.012-.61.013-1.04-.926-1.244C12.218 6.014 11.55 6 10.815 6c-1.527 0-2.575.054-3.114.273-.488.198-.694.71-.464.79.726.273 1.5.18 1.5 2.66 0 .593.073 1.31-.014 2.27-.058.629-.55.484-1.06-.292-1.27-1.927-2.198-4.07-2.5-4.78-.142-.323-.327-.554-.95-.554H1.7c-.518 0-.706.296-.706.625 0 .724.876 3.4 3.7 6.83 1.832 2.227 4.535 3.62 6.864 3.62.84.001 1.604-.107 1.604.51z"/></svg>
+          ВКонтакте
+        </a>
+      </div>
     </div>
 
     <!-- Большой статус-блок команды -->
