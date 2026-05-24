@@ -45,6 +45,10 @@ const PUBLIC_DIR       = path.join(__dirname, 'public');
 const MAX_FILE_MB      = parseInt(process.env.MAX_FILE_MB || '25', 10);
 const MAX_FILE_BYTES   = MAX_FILE_MB * 1024 * 1024;
 const KEEP_REVISIONS   = parseInt(process.env.KEEP_REVISIONS || '5', 10);
+/* Приём заявок. По умолчанию открыт. Чтобы закрыть — REGISTRATION_OPEN=false
+   в env (systemd override) + restart. Закрытие обратимо: убрать флаг и рестарт.
+   Вход и загрузка решений для уже зарегистрированных не блокируются. */
+const REGISTRATION_OPEN = process.env.REGISTRATION_OPEN !== 'false';
 const SESSION_TTL_MS   = 30 * 24 * 60 * 60 * 1000; // 30 дней
 const SCRYPT_N         = 16384; // дефолт scrypt — баланс безопасность/CPU
 
@@ -277,7 +281,7 @@ app.use(express.static(PUBLIC_DIR, {
 
 /* ---- Конфиг для клиента ---- */
 app.get('/api/config', (_req, res) => {
-  res.json({ maxFileMB: MAX_FILE_MB });
+  res.json({ maxFileMB: MAX_FILE_MB, registrationOpen: REGISTRATION_OPEN });
 });
 
 /* ---- Auth middleware ---- */
@@ -304,6 +308,8 @@ function adminAuth(req, res, next) {
 /* ---- Регистрация ---- */
 app.post('/api/register', registerLimiter, async (req, res, next) => {
   try {
+    if (!REGISTRATION_OPEN)
+      return res.status(403).json({ error: 'Регистрация на чемпионат завершена' });
     let { email, name, university, team, password, utm } = req.body || {};
     email = (email || '').trim().toLowerCase();
     name  = (name  || '').trim();

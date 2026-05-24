@@ -3399,8 +3399,27 @@ function updateNavAuth(user) {
 /* ==========================================================================
    Init: конфиг и автологин
    ========================================================================== */
+/* Когда приём заявок закрыт — прячем вкладку «Регистрация» и подменяем
+   форму заглушкой. Вход для уже зарегистрированных остаётся рабочим. */
+function applyRegistrationState() {
+  if (config.registrationOpen !== false) return;
+  const regTab = document.querySelector('.tab[data-tab="register"]');
+  if (regTab) regTab.style.display = 'none';
+  const form = document.getElementById('registerForm');
+  if (form) {
+    form.innerHTML =
+      '<div style="text-align:center;padding:24px 8px;color:var(--fg-muted)">' +
+      '<div style="font-size:40px;margin-bottom:12px">🔒</div>' +
+      '<div style="font-size:18px;font-weight:600;color:var(--fg);margin-bottom:8px">Регистрация завершена</div>' +
+      'Приём заявок на чемпионат закрыт.<br>Если кабинет уже есть — вход на вкладке слева.' +
+      '</div>';
+  }
+  setTab('login');
+}
+
 (async function init() {
   try { config = await api('/api/config'); } catch { /* дефолт */ }
+  applyRegistrationState();
   if (getToken()) {
     try {
       const me = await api('/api/me');
