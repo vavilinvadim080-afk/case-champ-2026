@@ -217,7 +217,7 @@
               <tr>
                 <th>#</th>
                 <th>Команда</th>
-                <th>Название</th>
+                <th>Участники</th>
                 <th>Автор</th>
                 <th>Файл</th>
                 <th class="num">Размер</th>
@@ -387,18 +387,30 @@ async function loadAll() {
   if (!subs.submissions.length) {
     subsBody.innerHTML = '<tr><td colspan="8" class="empty">Решений пока нет</td></tr>';
   } else {
-    subsBody.innerHTML = subs.submissions.map(s => `
+    subsBody.innerHTML = subs.submissions.map(s => {
+      /* Колонка «Участники» — для новых решений ФИО из s.members (по строке).
+         Для старых 48 решений (без members) показываем старое s.title/s.notes
+         как было — иначе колонка пустая и непонятно. */
+      let cell;
+      if (s.members && s.members.trim()) {
+        const lines = s.members.split('\n').map(x => x.trim()).filter(Boolean);
+        cell = lines.map(esc).join('<br>');
+      } else {
+        cell = esc(s.title || '') +
+               (s.notes ? '<div class="muted" style="font-size:12px;margin-top:4px">' + esc(s.notes) + '</div>' : '');
+      }
+      return `
       <tr>
         <td class="muted">${s.id}</td>
         <td>${esc(s.team)}</td>
-        <td>${esc(s.title)}${s.notes ? '<div class="muted" style="font-size:12px;margin-top:4px">'+esc(s.notes)+'</div>' : ''}</td>
+        <td>${cell}</td>
         <td>${esc(s.user_name || '')}<div class="muted" style="font-size:12px">${esc(s.user_email)}</div></td>
         <td class="muted" style="font-size:12px">${esc(s.file_name)}</td>
         <td class="num">${fmtSize(s.file_size)}</td>
         <td class="nowrap">${fmtDate(s.created_at)}</td>
         <td><button class="btn btn--sm" data-download="${s.id}" data-name="${esc(s.file_name)}">Скачать</button></td>
       </tr>
-    `).join('');
+    `;}).join('');
     subsBody.querySelectorAll('button[data-download]').forEach(b => {
       b.addEventListener('click', async () => {
         const id = b.getAttribute('data-download');

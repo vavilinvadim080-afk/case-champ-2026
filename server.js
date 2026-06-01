@@ -116,6 +116,11 @@ db.exec(`
 try { db.exec('ALTER TABLE users ADD COLUMN utm TEXT'); }
 catch (e) { if (!/duplicate column/i.test(e.message)) throw e; }
 
+/* Миграция: ФИО участников команды на решение. Заполняется на новой форме,
+   у старых 48 решений остаётся NULL. */
+try { db.exec('ALTER TABLE submissions ADD COLUMN members TEXT'); }
+catch (e) { if (!/duplicate column/i.test(e.message)) throw e; }
+
 /* Простой housekeeping — раз в час чистим протухшие сессии */
 setInterval(() => {
   try { db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now()); }
@@ -396,7 +401,7 @@ app.get('/api/me', auth, (req, res) => {
   let count  = 0;
   if (u.team) {
     latest = db.prepare(`
-      SELECT id, team, user_email, title, notes, file_name, file_size, status, created_at
+      SELECT id, team, user_email, title, notes, members, file_name, file_size, status, created_at
       FROM submissions WHERE team = ?
       ORDER BY created_at DESC LIMIT 1
     `).get(u.team);
@@ -435,12 +440,24 @@ app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
   const u = db.prepare('SELECT team FROM users WHERE email = ?').get(req.userEmail);
   if (!u) return cleanupAndFail(req, res, 404, 'Пользователь не найден');
 
-  const team  = (req.body?.team  || u.team || '').trim();
-  const title = (req.body?.title || '').trim().slice(0, 200);
-  const notes = (req.body?.notes || '').trim().slice(0, 2000);
+  const team    = (req.body?.team    || u.team || '').trim();
+  /* title и notes больше не запрашиваются у пользователя (по правкам от 02.06).
+     Принимаем если вдруг придут (для совместимости с возможными клиентами),
+     но не валидируем — для новой формы будет дефолт. */
+  const title   = (req.body?.title   || '').trim().slice(0, 200) || 'Решение команды';
+  const notes   = (req.body?.notes   || '').trim().slice(0, 2000);
+  /* ФИО участников: каждое ФИО с новой строки, до 500 символов.
+     Нормализуем переносы строк и режем пустые строки. */
+  const members = (req.body?.members || '').trim()
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .join('\n')
+    .slice(0, 500);
 
   if (!team || team.length > 60)   return cleanupAndFail(req, res, 400, 'Укажи название команды (до 60 символов)');
-  if (!title)                       return cleanupAndFail(req, res, 400, 'Укажи название решения');
+  if (!members)                     return cleanupAndFail(req, res, 400, 'Укажи ФИО участников команды (по одному в строке)');
   if (!req.file)                    return cleanupAndFail(req, res, 400, 'Прикрепи PDF-файл с решением');
 
   // Не доверяем mimetype/расширению — проверяем содержимое
@@ -453,9 +470,9 @@ app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
   const safePath = path.basename(req.file.path);
 
   const info = db.prepare(`
-    INSERT INTO submissions (team, user_email, title, notes, file_name, file_path, file_size, status, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 'Принято', ?)
-  `).run(team, req.userEmail, title, notes, req.file.originalname, safePath, req.file.size, Date.now());
+    INSERT INTO submissions (team, user_email, title, notes, file_name, file_path, file_size, status, created_at, members)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'Принято', ?, ?)
+  `).run(team, req.userEmail, title, notes, req.file.originalname, safePath, req.file.size, Date.now(), members);
 
   // Хранить только последние KEEP_REVISIONS ревизий команды.
   // Старше — удаляем и файл с диска, и запись из БД.
@@ -474,7 +491,7 @@ app.post('/api/submission', auth, uploadLimiter, (req, res, next) => {
   }
 
   const row = db.prepare(`
-    SELECT id, team, user_email, title, notes, file_name, file_size, status, created_at
+    SELECT id, team, user_email, title, notes, members, file_name, file_size, status, created_at
     FROM submissions WHERE id = ?
   `).get(info.lastInsertRowid);
 
@@ -491,7 +508,7 @@ app.get('/api/submissions', auth, (req, res) => {
   const u = db.prepare('SELECT team FROM users WHERE email = ?').get(req.userEmail);
   if (!u || !u.team) return res.json({ submissions: [] });
   const rows = db.prepare(`
-    SELECT id, team, user_email, title, notes, file_name, file_size, status, created_at
+    SELECT id, team, user_email, title, notes, members, file_name, file_size, status, created_at
     FROM submissions WHERE team = ?
     ORDER BY created_at DESC
   `).all(u.team);
@@ -581,7 +598,7 @@ app.get('/api/admin/submissions', adminAuth, (_req, res) => {
   const rows = db.prepare(`
     SELECT
       s.id, s.team, s.user_email, u.name AS user_name,
-      s.title, s.notes, s.file_name, s.file_size, s.status, s.created_at
+      s.title, s.notes, s.members, s.file_name, s.file_size, s.status, s.created_at
     FROM submissions s
     LEFT JOIN users u ON u.email = s.user_email
     ORDER BY s.created_at DESC
@@ -647,14 +664,14 @@ app.get('/api/admin/export/submissions.csv', adminAuth, (_req, res) => {
   const rows = db.prepare(`
     SELECT
       s.id, s.team, s.user_email, u.name AS user_name,
-      s.title, s.notes, s.file_name, s.file_size, s.status, s.created_at
+      s.title, s.notes, s.members, s.file_name, s.file_size, s.status, s.created_at
     FROM submissions s
     LEFT JOIN users u ON u.email = s.user_email
     ORDER BY s.created_at DESC
   `).all();
   const csv = rowsToCsv(
-    ['id', 'team', 'user_email', 'user_name', 'title', 'notes', 'file_name', 'file_size', 'status', 'submitted_at'],
-    rows.map(r => [r.id, r.team, r.user_email, r.user_name, r.title, r.notes, r.file_name, r.file_size, r.status, isoMs(r.created_at)])
+    ['id', 'team', 'user_email', 'user_name', 'title', 'notes', 'members', 'file_name', 'file_size', 'status', 'submitted_at'],
+    rows.map(r => [r.id, r.team, r.user_email, r.user_name, r.title, r.notes, r.members, r.file_name, r.file_size, r.status, isoMs(r.created_at)])
   );
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', 'attachment; filename="submissions.csv"');

@@ -2857,12 +2857,10 @@ body { background: var(--bg-deep-blue); }
           <input class="input" type="text" id="subTeam" placeholder="Например: Route Masters" required />
         </div>
         <div class="field">
-          <label for="subTitle">Название решения</label>
-          <input class="input" type="text" id="subTitle" placeholder="AI-агент для онбординга сотрудников" required />
-        </div>
-        <div class="field">
-          <label for="subNotes">Краткая аннотация (до 500 знаков)</label>
-          <textarea class="textarea" id="subNotes" maxlength="500" placeholder="Опиши подход, ключевую идею, ожидаемый эффект…"></textarea>
+          <label for="subMembers">ФИО участников команды</label>
+          <textarea class="textarea" id="subMembers" rows="5" maxlength="500"
+                    placeholder="Иванов Иван Иванович&#10;Петрова Анна Сергеевна&#10;…" required></textarea>
+          <div class="helper">Каждое ФИО с новой строки, 3–5 человек.</div>
         </div>
         <div class="field">
           <label>Файл решения (PDF)</label>
@@ -3172,10 +3170,10 @@ function setFile(f) {
 $('#submitForm').addEventListener('submit', async e => {
   e.preventDefault();
   const err = $('#subErr'); err.style.display = 'none';
-  const team  = $('#subTeam').value.trim();
-  const title = $('#subTitle').value.trim();
-  const notes = $('#subNotes').value.trim();
+  const team    = $('#subTeam').value.trim();
+  const members = $('#subMembers').value.trim();
 
+  if (!members) { err.textContent = 'Укажи ФИО участников команды'; err.style.display = 'block'; return; }
   if (!chosenFile) { err.textContent = 'Прикрепи PDF-файл с решением'; err.style.display = 'block'; return; }
 
   const btn = $('#submitBtn');
@@ -3185,8 +3183,7 @@ $('#submitForm').addEventListener('submit', async e => {
 
   const fd = new FormData();
   fd.append('team', team);
-  fd.append('title', title);
-  fd.append('notes', notes);
+  fd.append('members', members);
   fd.append('file', chosenFile);
 
   try {
@@ -3224,12 +3221,19 @@ async function refreshSubmissions() {
     return;
   }
   list.forEach((s, idx) => {
+    /* Заголовок: для новых решений — название команды, для старых (где
+       новой формы ещё не было) — оставшееся s.title. Подпись «Текущее» —
+       первой строке (самой свежей по created_at DESC). */
+    const heading = (s.members && s.members.trim()) ? s.team : (s.title || s.team);
+    /* Краткая строка с ФИО первых 2-3 участников для превью. */
+    const membersPreview = (s.members || '')
+      .split('\n').map(x => x.trim()).filter(Boolean).slice(0, 3).join(', ');
     const row = document.createElement('div');
     row.className = 'submission';
     row.innerHTML = `
       <div class="submission__info">
-        <div class="submission__title">${escapeHtml(s.title)}${idx === 0 ? ' <span class="submission__status" style="margin-left:6px">Текущее</span>' : ''}</div>
-        <div class="submission__meta">Команда «${escapeHtml(s.team)}» · ${escapeHtml(s.file_name)} · ${fmtSize(s.file_size)} · ${fmtDate(s.created_at)}</div>
+        <div class="submission__title">${escapeHtml(heading)}${idx === 0 ? ' <span class="submission__status" style="margin-left:6px">Текущее</span>' : ''}</div>
+        <div class="submission__meta">${membersPreview ? escapeHtml(membersPreview) + ' · ' : ''}${escapeHtml(s.file_name)} · ${fmtSize(s.file_size)} · ${fmtDate(s.created_at)}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn btn--ghost" type="button" data-dl-id="${s.id}" data-dl-name="${escapeHtml(s.file_name)}">Скачать</button>
